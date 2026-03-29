@@ -1,0 +1,49 @@
+@import './tailwind.css';
+
+@theme {
+  --color-old-bg: #f7f7f7;
+  --color-old-border: #c2c2c2;
+  --color-old-primary: #005826;
+  --color-old-light: #e6f2e6;
+  --color-old-muted: #666;
+  --font-song: SimSun, '宋体', serif;
+}
+
+/* 强制全局重置，确保居中生效 */
+* {
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+html,
+body {
+  @apply bg-old-bg font-song min-h-screen w-full;
+}
+
+a {
+  @apply text-old-primary no-underline;
+}
+a:hover {
+  @apply underline;
+}
+
+/* 复古组件样式（保持不变） */
+.panel-title {
+  @apply bg-old-light border border-old-border px-2.5 py-1.5 font-bold text-old-primary font-song;
+}
+.btn-old {
+  @apply bg-old-light border border-old-border px-2.5 py-1 text-old-primary cursor-pointer font-song;
+}
+.btn-old:hover {
+  @apply bg-[#d6e6d6];
+}
+.box-old {
+  @apply bg-white border border-old-border p-2.5;
+}
+.list-old li {
+  @apply py-1.5 border-b border-dashed border-gray-300;
+}
+.list-old li:last-child {
+  @apply border-b-0;
+}
