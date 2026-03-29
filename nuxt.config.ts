@@ -3,35 +3,34 @@ import tailwindcss from '@tailwindcss/vite'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   modules: ['@nuxt/content', '@element-plus/nuxt'],
-  css: ['~/assets/css/main.css'],
-  content: {
-    build: {
-      markdown: {
-        highlight: {
-          // Theme used in all color schemes.
-          // theme: 'github-light',
-          // OR
-          theme: {
-            // Default theme (same as single string)
-            default: 'github-light',
-            // Theme used if `html.dark`
-            dark: 'github-dark',
-            // Theme used if `html.sepia`
-            sepia: 'monokai',
-          },
-          langs: ['json', 'js', 'ts', 'html', 'css', 'vue', 'shell', 'mdc', 'md', 'yaml', 'c', 'cpp', 'java'],
-        },
+  css: ['~/assets/css/main.css', '~/assets/scss/global.scss'],
+  app: {
+    head: {
+      title: '秘术云阁',
+      titleTemplate: '%s - 秘术云阁',
+      htmlAttrs: {
+        lang: 'en',
       },
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: '/favicon.png',
+        },
+      ],
     },
-    /*database: {
-      type: 'sqlite',
-      filename: ':memory:',
-    },*/
+  },
+  devServer: {
+    host: '127.0.0.1',
+    port: 3000,
   },
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ['dayjs/plugin/*.js', 'dayjs', 'lodash-unified', '@element-plus/icons-vue'],
+    },
   },
   elementPlus: {},
 })

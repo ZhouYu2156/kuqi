@@ -3,47 +3,65 @@
 @theme {
   --color-old-bg: #f7f7f7;
   --color-old-border: #c2c2c2;
-  --color-old-primary: #005826;
+  --color-old-primary: #005e36;
   --color-old-light: #e6f2e6;
+  --color-old-soft: #d1e6d1;
   --color-old-muted: #666;
+
   --font-song: SimSun, '宋体', serif;
 }
 
-/* 强制全局重置，确保居中生效 */
 * {
-  margin: 0 !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 html,
 body {
-  @apply bg-old-bg font-song min-h-screen w-full;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-old-bg);
+  font-family: var(--font-song);
+  color: #222;
 }
-
 a {
-  @apply text-old-primary no-underline;
-}
-a:hover {
-  @apply underline;
+  color: var(--color-old-primary);
+  text-decoration: none;
 }
 
-/* 复古组件样式（保持不变） */
+a:hover {
+  text-decoration: underline;
+}
+
+.panel-container {
+  @apply mt-2;
+}
+
+/* 复古板块标题 */
 .panel-title {
-  @apply bg-old-light border border-old-border px-2.5 py-1.5 font-bold text-old-primary font-song;
+  background: var(--color-old-light);
+  border: 1px solid var(--color-old-border);
+  padding: 8px 12px;
+  font-weight: bold;
+  color: var(--color-old-primary);
+  font-family: var(--font-song);
+  @apply px-6;
 }
-.btn-old {
-  @apply bg-old-light border border-old-border px-2.5 py-1 text-old-primary cursor-pointer font-song;
+
+/* 复古内容盒子 */
+.panel-box {
+  background: white;
+  border: 1px solid var(--color-old-border);
+  padding: 20px;
 }
-.btn-old:hover {
-  @apply bg-[#d6e6d6];
+
+/* 复古列表 */
+.panel-list li {
+  padding: 8px 0;
+  border-bottom: 1px dashed #ccc;
 }
-.box-old {
-  @apply bg-white border border-old-border p-2.5;
-}
-.list-old li {
-  @apply py-1.5 border-b border-dashed border-gray-300;
-}
-.list-old li:last-child {
-  @apply border-b-0;
+
+.panel-list li:last-child {
+  border-bottom: none;
 }
