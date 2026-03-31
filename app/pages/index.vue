@@ -1,22 +1,17 @@
 <script setup lang="ts">
 useHead({
-  title: '首页',
+  title: '主页',
 })
 </script>
 
 <template>
-  <el-scrollbar height="800px">
-    <div class="panel">
-      <HotPost />
-
-      <RareResources />
-    </div>
-  </el-scrollbar>
+  <UPage
+    :ui="{
+      root: 'px-8 sm:px-12 md:px-24 lg:px-32 pb-24',
+    }">
+    <!-- 页面主题 -->
+    <JKPageHero />
+    <!-- 特性卡片 -->
+    <JKFeatures />
+  </UPage>
 </template>
-
-<style scoped lang="scss">
-.panel {
-  // @apply h-125 overflow-scroll text-center scroll-auto overflow-y-scroll;
-  @apply min-h-80;
-}
-</style>

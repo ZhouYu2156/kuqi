@@ -13,6 +13,10 @@ useHead({
   meta: [
     {
       name: 'keywords',
+      content: '极客兔官网,专为极客而生',
+    },
+    {
+      name: 'keywords',
       content: '秘术云阁,致力于打造全球华人精神自由网络家园',
     },
     {
@@ -24,7 +28,15 @@ useHead({
 </script>
 
 <template>
-  <NuxtLayout>
-    <NuxtPage />
-  </NuxtLayout>
+  <UApp>
+    <JKHeader />
+
+    <UMain>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </UMain>
+
+    <JKFooter />
+  </UApp>
 </template>

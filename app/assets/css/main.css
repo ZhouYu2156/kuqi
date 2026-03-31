@@ -1,67 +1,51 @@
-@import './tailwind.css';
+@import 'tailwindcss';
+@import '@nuxt/ui';
 
+/* 引入字体 */
+@font-face {
+  font-style: normal;
+  font-family: 'FZHanZhenGuangBiao';
+  font-weight: 400;
+  src: url('~/assets/fonts/FZHanZhenGuangBiao.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-style: normal;
+  font-weight: 400;
+  font-family: 'ZKKuaiLeTi';
+  src: url('~/assets/fonts/ZKKuaiLeTi.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-style: normal;
+  font-family: 'PingFangSC';
+  font-weight: 400;
+  src: url('~/assets/fonts/PingFangSC.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-style: normal;
+  font-family: 'QuicksandBold';
+  font-weight: 400;
+  src: url('~/assets/fonts/Quicksand-Bold.woff2') format('woff2');
+  font-display: swap;
+}
+
+/* 所有滚动条样式 */
+*::-webkit-scrollbar {
+  width: 3px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #234567;
+  border-radius: 3px;
+}
+
+/** 自定义变量 */
 @theme {
-  --color-old-bg: #f7f7f7;
-  --color-old-border: #c2c2c2;
-  --color-old-primary: #005e36;
-  --color-old-light: #e6f2e6;
-  --color-old-soft: #d1e6d1;
-  --color-old-muted: #666;
-
-  --font-song: SimSun, '宋体', serif;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  width: 100%;
-  min-height: 100vh;
-  background: var(--color-old-bg);
-  font-family: var(--font-song);
-  color: #222;
-}
-a {
-  color: var(--color-old-primary);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.panel-container {
-  @apply mt-2;
-}
-
-/* 复古板块标题 */
-.panel-title {
-  background: var(--color-old-light);
-  border: 1px solid var(--color-old-border);
-  padding: 8px 12px;
-  font-weight: bold;
-  color: var(--color-old-primary);
-  font-family: var(--font-song);
-  @apply px-6;
-}
-
-/* 复古内容盒子 */
-.panel-box {
-  background: white;
-  border: 1px solid var(--color-old-border);
-  padding: 20px;
-}
-
-/* 复古列表 */
-.panel-list li {
-  padding: 8px 0;
-  border-bottom: 1px dashed #ccc;
-}
-
-.panel-list li:last-child {
-  border-bottom: none;
+  --font-FZHanZhenGuangBiao: 'FZHanZhenGuangBiao', sans-serif;
+  --font-PingFangSC: 'PingFangSC', sans-serif;
+  --font-QuicksandBold: 'QuicksandBold', sans-serif;
+  --font-ZKKuaiLeTi: 'ZKKuaiLeTi', sans-serif;
 }

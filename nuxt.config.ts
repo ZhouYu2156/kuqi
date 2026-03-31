@@ -4,20 +4,23 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: false },
-  modules: ['@nuxt/content', '@element-plus/nuxt'],
-  css: ['~/assets/css/main.css', '~/assets/scss/global.scss'],
+  modules: ['@nuxt/ui', '@nuxt/content', '@element-plus/nuxt'],
+  css: ['~/assets/css/main.css'],
+  ui: {
+    fonts: false,
+  },
   app: {
     head: {
-      title: '秘术云阁',
-      titleTemplate: '%s - 秘术云阁',
+      title: '极客兔',
+      titleTemplate: '%s - 极客兔',
       htmlAttrs: {
         lang: 'en',
       },
       link: [
         {
           rel: 'icon',
-          type: 'image/x-icon',
-          href: '/favicon.png',
+          type: 'image/svg+xml',
+          href: '/favicon.svg',
         },
       ],
     },
@@ -27,10 +30,19 @@ export default defineNuxtConfig({
     port: 3000,
   },
   vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: '@use "~/assets/element/index.scss" as *;',
+        },
+      },
+    },
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: ['dayjs/plugin/*.js', 'dayjs', 'lodash-unified', '@element-plus/icons-vue'],
+      include: ['dayjs/plugin/*.js', '@element-plus/icons-vue'],
     },
   },
-  elementPlus: {},
+  elementPlus: {
+    importStyle: 'scss',
+  },
 })

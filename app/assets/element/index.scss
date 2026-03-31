@@ -1,0 +1,76 @@
+/* 只需要重写你需要的即可 */
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "white": #ffffff,
+    "black": #000000,
+    "primary": (
+      "base": #16c557
+    ),
+    "success": (
+      "base": #20c997
+    ),
+    "warning": (
+      "base": #e6a23c
+    ),
+    "danger": (
+      "base": #f56c6c
+    ),
+    "error": (
+      "base": #de2c2c
+    ),
+    "info": (
+      "base": #09b2d4
+    )
+  ),
+  $bg-color: (
+    "page": #ffffff,
+    "overlay": #ffffff,
+    "": #ffffff
+  ),
+  $text-color: (
+    "primary": #303133,
+    "regular": #606266,
+    "secondary": #909399,
+    "placeholder": #a8abb2,
+    "disabled": #c0c4cc
+  ),
+  $border-color: (
+    "": #dcdfe6,
+    "light": #e4e7ed,
+    "lighter": #ebeef5,
+    "extra-light": #f2f6fc,
+    "dark": #d4d7de,
+    "darker": #cdd0d6
+  ),
+  $fill-color: (
+    "": #f0f2f5,
+    "light": #f5f7fa,
+    "lighter": #fafafa,
+    "extra-light": #fafcff,
+    "dark": #ebedf0,
+    "darker": #e6e8eb,
+    "blank": #ffffff
+  )
+);
+
+// 暗黑模式变量
+html.dark {
+  --el-bg-color: #212328;
+  --el-bg-color-overlay: #212529;
+  --el-text-color-primary: #e5e7eb;
+  --el-text-color-regular: #d1d5db;
+  --el-text-color-secondary: #9ca3af;
+  --el-text-color-placeholder: #6b7280;
+  --el-text-color-disabled: #4b5563;
+  --el-border-color: #374151;
+  --el-border-color-light: #4b5563;
+  --el-border-color-lighter: #6b7280;
+  --el-border-color-extra-light: #9ca3af;
+  --el-fill-color: #1f2937;
+  --el-fill-color-light: #374151;
+  --el-fill-color-lighter: #4b5563;
+  --el-fill-color-extra-light: #6b7280;
+  --el-fill-color-blank: #111827;
+  --el-mask-color: rgba(0, 0, 0, 0.8);
+  --el-mask-color-extra-light: rgba(0, 0, 0, 0.3);
+}
