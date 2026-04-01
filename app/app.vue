@@ -8,16 +8,15 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 useHead({
-  titleTemplate: '%s · 秘术云阁',
+  titleTemplate: '%s · JK 知识站',
   meta: [
     {
       name: 'keywords',
-      content: '秘术云阁,一人公司,创业陪跑,全栈开发,个人品牌',
+      content: '知识付费,音乐,视频教程,博主',
     },
     {
       name: 'description',
-      content:
-        '一人公司产品化与创业陪跑：全栈交付、轻量咨询与月度陪跑，面向中国大陆个人创作者与独立开发者。',
+      content: '集成音乐与个人视频教程的知识付费方向站点：统一鉴权、会员与内容扩展。',
     },
   ],
 })
@@ -25,14 +24,8 @@ useHead({
 
 <template>
   <UApp>
-    <SiteHeader />
-
-    <UMain class="min-h-[calc(100vh-8rem)]">
-      <NuxtLayout>
-        <NuxtPage />
-      </NuxtLayout>
-    </UMain>
-
-    <SiteFooter />
+    <NuxtLayout>
+      <NuxtPage />
+    </NuxtLayout>
   </UApp>
 </template>

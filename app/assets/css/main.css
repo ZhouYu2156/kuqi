@@ -176,3 +176,18 @@ html:not(.dark) .qr-frame {
   margin-top: 0.625rem;
   text-align: center;
 }
+
+/* JK 布局：主色由 useJkTheme 覆盖；暗色模式页底为暗系紫 */
+.jk-theme {
+  --jk-primary: #00dc82;
+  --jk-primary-soft: rgba(0, 220, 130, 0.12);
+  --jk-ring: rgba(0, 220, 130, 0.35);
+  --jk-bg-dark: #16101f;
+  --jk-bg-dark-elevated: #1e1628;
+  /** 暗色下输入框背景（略亮于底、偏紫灰，避免死黑） */
+  --jk-input-surface-dark: #2e2640;
+}
+
+.jk-heading {
+  color: var(--jk-primary);
+}

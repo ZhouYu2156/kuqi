@@ -1,6 +1,7 @@
 import * as crypto from 'crypto'
 import * as fs from 'fs'
 import * as path from 'path'
+import { UnionResponseResult } from '~/utils'
 import { generateTradeNo } from '~~/shared/utils'
 
 /**
@@ -64,8 +65,9 @@ function createRequestSignature({
 async function createWxOrder() {
   // 1. 创建微信支付订单
   const createWxOrderApi = 'https://api.mch.weixin.qq.com/v3/pay/transactions/native'
+
   const outTradeNo = generateTradeNo()
-  console.log('outTradeNo: ', outTradeNo)
+
   const body = {
     appid: 'wx769759c9aed50e3c', // 小程序APPID
     mchid: '1740799116', // 商户号
@@ -81,7 +83,7 @@ async function createWxOrder() {
     },
     detail: {
       cost_price: 1,
-      invoice_id: '极客兔的小票ID',
+      invoice_id: '无',
       goods_detail: [
         {
           merchant_goods_id: '1246464644',
@@ -93,13 +95,13 @@ async function createWxOrder() {
       ],
     },
     scene_info: {
-      payer_client_ip: '14.23.150.211',
+      payer_client_ip: '47.120.28.25',
       device_id: '013467007045764',
       store_info: {
-        id: '0001',
-        name: '腾讯大厦分店',
-        area_code: '440305',
-        address: '广东省深圳市南山区科技中一道10000号',
+        id: '00001',
+        name: '厦门极客兔软件开发工作室',
+        area_code: '350211',
+        address: '福建省厦门市翔安区同安街道西塘村33号',
       },
     },
     settle_info: {
@@ -121,10 +123,10 @@ async function createWxOrder() {
     body,
   })
 
-  console.log('response: ', JSON.stringify(response, null, 2))
+  return response
 }
 
 export default defineEventHandler(async (event) => {
-  await createWxOrder()
-  return 'Hello world!'
+  const response = await createWxOrder()
+  return UnionResponseResult(response, '创建微信支付订单成功')
 })

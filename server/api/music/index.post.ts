@@ -1,63 +1,45 @@
+import { defineEventHandler, getQuery } from 'h3'
 import { UnionResponseResult } from '~/utils'
-import { MusicItem } from '~~/shared/types'
-import { getSingleSongSignature, headers, token } from './index.get'
+import { getSingleMusic } from '~~/server/api/music/kugouSingle'
+import { getAuthUser } from '~~/server/utils/authContext'
+import { canConsumeMusicPlay, DAILY_FREE_LIMIT, hasUnlimitedMusic, incrementTodayPlay } from '~~/server/lib/musicQuota'
+import { fail } from '~~/server/utils/apiResponse'
+import { ResponseCode } from '~~/shared/types/common'
 
-/**
- * 获取单首音乐详细信息
- * @param {string} audioId music Unique ID
- * @return music detail
- */
-export async function getSingleMusic(audioId: string) {
-  // 1. 构造请求参数
-  const targetUrl = 'https://wwwapi.kugou.com/play/songinfo'
-  const timestamp = Date.now()
-
-  const signatrue = getSingleSongSignature(timestamp, audioId)
-  const payload = {
-    srcappid: '2919',
-    clientver: '20000',
-    clienttime: timestamp,
-    mid: '26983d9533541a7156f708491cfeceab',
-    uuid: '26983d9533541a7156f708491cfeceab',
-    dfid: '4FGxv900QtNq2M7rJX0MjIZI',
-    appid: '1014',
-    platid: '4',
-    encode_album_audio_id: audioId,
-    token: token,
-    userid: '2175914904',
-    signature: signatrue,
-  }
-  console.log(JSON.stringify(payload, null, 2))
-
-  type MusicDetailResponse = {
-    status: number
-    err_code: number
-    data: MusicItem
-  }
-  // 2. 发起请求
-  const response = (await $fetch(targetUrl, {
-    method: 'GET',
-    headers,
-    params: payload,
-  })) as MusicDetailResponse
-  // 3. 处理响应数据
-
-  return response.data
-}
-
-// 请求处理函数
 export default defineEventHandler(async (event) => {
-  const { audioId = null } = getQuery<{ audioId: string }>(event)
+  const user = await getAuthUser(event)
+  if (!user) {
+    return fail(event, ResponseCode.Unauthorized, '请先登录后再试听（免费用户每日可试听歌曲）', null)
+  }
 
-  console.log('audio: ', audioId)
+  const { audioId = null } = getQuery<{ audioId: string }>(event)
   if (!audioId) {
-    return {
-      status: 400,
-      body: '参数错误',
+    return fail(event, ResponseCode.BadRequest, '缺少 audioId', null)
+  }
+
+  if (!hasUnlimitedMusic(user)) {
+    const gate = await canConsumeMusicPlay(user)
+    if (!gate.ok) {
+      if (gate.reason === 'QUOTA_DB') {
+        return fail(event, ResponseCode.ServerError, '额度统计暂不可用，请稍后再试', null)
+      }
+      return fail(event, ResponseCode.Forbidden, `今日免费试听额度已用完（每日 ${DAILY_FREE_LIMIT} 首），开通会员后可畅听与下载`, {
+        reason: 'MUSIC_QUOTA',
+        upgradePath: '/membership',
+        dailyFreeLimit: DAILY_FREE_LIMIT,
+      })
     }
   }
 
-  const resposne = await getSingleMusic(audioId)
-
-  return UnionResponseResult(resposne, '获取成功', 200)
+  try {
+    const data = await getSingleMusic(audioId)
+    if (!hasUnlimitedMusic(user)) {
+      await incrementTodayPlay(user.id)
+    }
+    return UnionResponseResult(data, '获取成功', ResponseCode.Success)
+  }
+  catch (e) {
+    console.error('[music/play]', e)
+    return fail(event, ResponseCode.ServerError, '获取播放信息失败', null)
+  }
 })

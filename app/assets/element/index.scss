@@ -54,22 +54,23 @@
 );
 
 html.dark {
-  --el-bg-color: #141418;
-  --el-bg-color-overlay: #1c1c22;
+  --el-bg-color: #1a1522;
+  --el-bg-color-overlay: #252030;
   --el-text-color-primary: #e7e5e4;
   --el-text-color-regular: #d6d3d1;
   --el-text-color-secondary: #a8a29e;
-  --el-text-color-placeholder: #78716c;
+  --el-text-color-placeholder: #9b90b0;
   --el-text-color-disabled: #57534e;
-  --el-border-color: #3f3f46;
-  --el-border-color-light: #52525b;
-  --el-border-color-lighter: #3f3f46;
-  --el-border-color-extra-light: #27272a;
-  --el-fill-color: #27272a;
-  --el-fill-color-light: #3f3f46;
-  --el-fill-color-lighter: #52525b;
-  --el-fill-color-extra-light: #3f3f46;
-  --el-fill-color-blank: #0c0c0f;
+  --el-border-color: #3f3a4d;
+  --el-border-color-light: #4d4658;
+  --el-border-color-lighter: #3f3a4d;
+  --el-border-color-extra-light: #2e2838;
+  --el-fill-color: #322a40;
+  --el-fill-color-light: #3d3648;
+  --el-fill-color-lighter: #4a4258;
+  --el-fill-color-extra-light: #3d3648;
+  /** 输入框内底：与 JK 暗紫页协调，避免纯黑块 */
+  --el-fill-color-blank: #2e2640;
   --el-mask-color: rgba(0, 0, 0, 0.75);
   --el-mask-color-extra-light: rgba(0, 0, 0, 0.35);
 }

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'jk',
+})
+
 const route = useRoute()
 const slug = computed(() => String(route.params.slug))
 
@@ -22,7 +26,7 @@ useHead({
 </script>
 
 <template>
-  <article class="site-container py-12 sm:py-16 lg:py-20">
+  <article class="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
     <header class="max-w-3xl">
       <UButton
         to="/blog"
@@ -54,9 +58,6 @@ useHead({
         class="blog-content space-y-4 text-default leading-relaxed [&_h2]:mt-10 [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-semibold [&_h3]:mt-8 [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-semibold [&_li]:ml-6 [&_li]:list-disc [&_p]:text-muted [&_ul]:space-y-2" />
     </div>
 
-    <footer class="mt-16 max-w-3xl">
-      <SiteWechatBlock />
-    </footer>
   </article>
 </template>
 

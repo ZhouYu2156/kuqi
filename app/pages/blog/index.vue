@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: 'jk',
+})
+
 useHead({
   title: '博客',
 })
@@ -13,7 +17,7 @@ if (error.value) {
 </script>
 
 <template>
-  <div class="site-container py-12 sm:py-16 lg:py-20">
+  <div class="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
     <UPageHeader
       title="博客"
       description="创业认知、一人公司方法与实践记录。更多长文可通过公众号获取。" />
@@ -50,8 +54,5 @@ if (error.value) {
       暂无文章。请在 <code class="text-primary">content/blog/</code> 下添加 Markdown。
     </div>
 
-    <div class="mt-16">
-      <SiteWechatBlock :show-hint="true" />
-    </div>
   </div>
 </template>
