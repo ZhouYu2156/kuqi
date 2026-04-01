@@ -1,76 +1,75 @@
-/* 只需要重写你需要的即可 */
-@forward "element-plus/theme-chalk/src/common/var.scss" with (
+/* Element Plus · 与站酷黑金主色对齐（主色琥珀/金） */
+@forward 'element-plus/theme-chalk/src/common/var.scss' with (
   $colors: (
-    "white": #ffffff,
-    "black": #000000,
-    "primary": (
-      "base": #16c557
+    'white': #ffffff,
+    'black': #000000,
+    'primary': (
+      'base': #c9a84c,
     ),
-    "success": (
-      "base": #20c997
+    'success': (
+      'base': #22c55e,
     ),
-    "warning": (
-      "base": #e6a23c
+    'warning': (
+      'base': #eab308,
     ),
-    "danger": (
-      "base": #f56c6c
+    'danger': (
+      'base': #ef4444,
     ),
-    "error": (
-      "base": #de2c2c
+    'error': (
+      'base': #dc2626,
     ),
-    "info": (
-      "base": #09b2d4
-    )
+    'info': (
+      'base': #78716c,
+    ),
   ),
   $bg-color: (
-    "page": #ffffff,
-    "overlay": #ffffff,
-    "": #ffffff
+    'page': #faf8f3,
+    'overlay': #ffffff,
+    '': #ffffff,
   ),
   $text-color: (
-    "primary": #303133,
-    "regular": #606266,
-    "secondary": #909399,
-    "placeholder": #a8abb2,
-    "disabled": #c0c4cc
+    'primary': #1c1917,
+    'regular': #44403c,
+    'secondary': #78716c,
+    'placeholder': #a8a29e,
+    'disabled': #d6d3d1,
   ),
   $border-color: (
-    "": #dcdfe6,
-    "light": #e4e7ed,
-    "lighter": #ebeef5,
-    "extra-light": #f2f6fc,
-    "dark": #d4d7de,
-    "darker": #cdd0d6
+    '': #e7e5e4,
+    'light': #d6d3d1,
+    'lighter': #d6d3d1,
+    'extra-light': #e7e5e4,
+    'dark': #a8a29e,
+    'darker': #78716c,
   ),
   $fill-color: (
-    "": #f0f2f5,
-    "light": #f5f7fa,
-    "lighter": #fafafa,
-    "extra-light": #fafcff,
-    "dark": #ebedf0,
-    "darker": #e6e8eb,
-    "blank": #ffffff
+    '': #f5f5f4,
+    'light': #e7e5e4,
+    'lighter': #fafaf9,
+    'extra-light': #fafaf9,
+    'dark': #d6d3d1,
+    'darker': #a8a29e,
+    'blank': #ffffff,
   )
 );
 
-// 暗黑模式变量
 html.dark {
-  --el-bg-color: #212328;
-  --el-bg-color-overlay: #212529;
-  --el-text-color-primary: #e5e7eb;
-  --el-text-color-regular: #d1d5db;
-  --el-text-color-secondary: #9ca3af;
-  --el-text-color-placeholder: #6b7280;
-  --el-text-color-disabled: #4b5563;
-  --el-border-color: #374151;
-  --el-border-color-light: #4b5563;
-  --el-border-color-lighter: #6b7280;
-  --el-border-color-extra-light: #9ca3af;
-  --el-fill-color: #1f2937;
-  --el-fill-color-light: #374151;
-  --el-fill-color-lighter: #4b5563;
-  --el-fill-color-extra-light: #6b7280;
-  --el-fill-color-blank: #111827;
-  --el-mask-color: rgba(0, 0, 0, 0.8);
-  --el-mask-color-extra-light: rgba(0, 0, 0, 0.3);
+  --el-bg-color: #141418;
+  --el-bg-color-overlay: #1c1c22;
+  --el-text-color-primary: #e7e5e4;
+  --el-text-color-regular: #d6d3d1;
+  --el-text-color-secondary: #a8a29e;
+  --el-text-color-placeholder: #78716c;
+  --el-text-color-disabled: #57534e;
+  --el-border-color: #3f3f46;
+  --el-border-color-light: #52525b;
+  --el-border-color-lighter: #3f3f46;
+  --el-border-color-extra-light: #27272a;
+  --el-fill-color: #27272a;
+  --el-fill-color-light: #3f3f46;
+  --el-fill-color-lighter: #52525b;
+  --el-fill-color-extra-light: #3f3f46;
+  --el-fill-color-blank: #0c0c0f;
+  --el-mask-color: rgba(0, 0, 0, 0.75);
+  --el-mask-color-extra-light: rgba(0, 0, 0, 0.35);
 }

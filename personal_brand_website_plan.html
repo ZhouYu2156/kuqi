@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Noto+Serif+SC:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E8C97A;
+      --gold-dim: #8A6D2F;
+      --black: #0A0A0A;
+      --dark: #111111;
+      --card: #161616;
+      --border: rgba(201, 168, 76, 0.25);
+      --text: #F0EBE0;
+      --text-muted: #8A8070;
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Noto Serif SC', serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: var(--font-body);
+      line-height: 1.7;
+      padding: 0;
+    }
+
+    /* ===== TOP NAV PREVIEW ===== */
+    .nav-preview {
+      background: rgba(10, 10, 10, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .nav-logo span {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+    }
+
+    .nav-links a {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      transition: color 0.2s;
+      cursor: default;
+    }
+
+    .nav-links a:hover {
+      color: var(--gold);
+    }
+
+    .nav-cta {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--gold);
+      padding: 8px 20px;
+      font-family: var(--font-mono);
+      cursor: default;
+    }
+
+    /* ===== SECTION LABELS ===== */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .section-label .tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+    }
+
+    .section-label .line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      max-width: 80px;
+    }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 80px 40px;
+      min-height: 320px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(201, 168, 76, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+
+    .hero-title em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 380px;
+    }
+
+    .hero-right {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .stat-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-align: right;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      padding: 12px 28px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: default;
+      font-weight: 500;
+    }
+
+    .btn-outline {
+      border: 1px solid var(--border);
+      color: var(--gold);
+      padding: 12px 28px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: default;
+    }
+
+    /* ===== SERVICES SECTION ===== */
+    .section {
+      padding: 64px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .section-title em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .section-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .service-card {
+      background: var(--card);
+      padding: 32px 28px;
+      position: relative;
+    }
+
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width 0.4s;
+    }
+
+    .service-card:hover::after {
+      width: 100%;
+    }
+
+    .service-icon {
+      font-size: 22px;
+      margin-bottom: 14px;
+      color: var(--gold);
+      font-family: var(--font-mono);
+    }
+
+    .service-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+
+    .service-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .service-tag {
+      display: inline-block;
+      margin-top: 16px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: var(--gold);
+      border: 1px solid var(--border);
+      padding: 3px 10px;
+    }
+
+    /* ===== ABOUT / PHILOSOPHY ===== */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: start;
+    }
+
+    .about-quote {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 400;
+      line-height: 1.6;
+      color: var(--text);
+      border-left: 3px solid var(--gold);
+      padding-left: 24px;
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .about-body {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 2;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .skill-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .skill-name {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      width: 90px;
+      flex-shrink: 0;
+    }
+
+    .skill-bar {
+      flex: 1;
+      height: 2px;
+      background: rgba(201, 168, 76, 0.15);
+    }
+
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--gold-dim), var(--gold));
+    }
+
+    .skill-pct {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--gold);
+      width: 40px;
+      text-align: right;
+    }
+
+    /* ===== BLOG ===== */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .blog-card {
+      background: var(--card);
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-card.featured {
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 220px;
+    }
+
+    .blog-card.featured::before {
+      content: 'FEATURED';
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 3px 10px;
+    }
+
+    .blog-num {
+      font-family: var(--font-display);
+      font-size: 64px;
+      font-weight: 900;
+      color: rgba(201, 168, 76, 0.08);
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      line-height: 1;
+    }
+
+    .blog-cat {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .blog-title {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+
+    .blog-card.featured .blog-title {
+      font-size: 22px;
+    }
+
+    .blog-excerpt {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.8;
+    }
+
+    .blog-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+      padding: 80px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(201, 168, 76, 0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .cta-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .qr-row {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-top: 32px;
+    }
+
+    .qr-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qr-placeholder {
+      width: 80px;
+      height: 80px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+
+    .qr-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 1px;
+      cursor: default;
+    }
+
+    .footer-links a:hover {
+      color: var(--gold);
+    }
+
+    /* ===== SITE MAP SECTION ===== */
+    .sitemap-section {
+      padding: 60px 40px;
+      background: var(--dark);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sitemap-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 36px;
+    }
+
+    .sitemap-col {
+      background: var(--card);
+      padding: 24px 20px;
+    }
+
+    .sitemap-page {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sitemap-item {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      padding: 5px 0;
+      padding-left: 10px;
+      border-left: 2px solid transparent;
+      line-height: 1.5;
+    }
+
+    .sitemap-item:hover {
+      border-left-color: var(--gold);
+      color: var(--text);
+      cursor: default;
+    }
+
+    /* === SCROLLBAR === */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--black);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--gold-dim);
+    }
+  </style>
+</head>
+
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="msg" x1="8" y1="8" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#E8C97A" />
+        <stop offset="0.45" stop-color="#C9A84C" />
+        <stop offset="1" stop-color="#8A6D2F" />
+      </linearGradient>
+      <linearGradient id="msg-inner" x1="14" y1="22" x2="34" y2="36" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#C9A84C" stop-opacity="0.35" />
+        <stop offset="1" stop-color="#C9A84C" stop-opacity="0.08" />
+      </linearGradient>
+    </defs>
+    <!-- �K6ѹ -->
+    <circle cx="24" cy="24" r="22" stroke="url(#msg)" stroke-width="1.25" opacity="0.55" />
+    <!-- Kv�� -->
+    <path d="M24 11 L35 18 L35 20 L13 20 L13 18 Z" fill="url(#msg)" opacity="0.95" />
+    <path d="M15 20 H33 V22 H15 Z" fill="url(#msg)" opacity="0.75" />
+    <!-- �BA�'� -->
+    <path d="M12 28 Q18 24 24 28 T36 28" stroke="url(#msg)" stroke-width="1.75" stroke-linecap="round" fill="none" />
+    <path d="M10 33 Q17 29 24 33 Q31 29 38 33" stroke="url(#msg)" stroke-width="1.5" stroke-linecap="round" fill="none"
+      opacity="0.85" />
+    <ellipse cx="24" cy="35" rx="10" ry="3.5" fill="url(#msg-inner)" />
+  </svg>
+
+  <!-- NAV -->
+  <nav class="nav-preview">
+    <div class="nav-logo">YOUR<span>NAME</span></div>
+    <div class="nav-links">
+      <a href="#">关于我</a>
+      <a href="#">服务</a>
+      <a href="#">博客</a>
+      <a href="#">资源</a>
+      <a href="#">咨询</a>
+    </div>
+    <div class="nav-cta">预约合作</div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div>
+      <div class="hero-eyebrow">// 全栈开发者 · 独立创业者 · 数字游民</div>
+      <h1 class="hero-title">用技术<br>创造<em>财富</em><br>与自由</h1>
+      <p class="hero-sub">我是一名具备前端、后端、运维能力的独立开发者，用代码和思维为他人提供高价值服务，构建属于自己的数字帝国。</p>
+      <div class="hero-btns">
+        <div class="btn-primary">探索我的服务</div>
+        <div class="btn-outline">阅读我的故事</div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="stat-box">
+        <div class="stat-num">100W</div>
+        <div class="stat-label">首阶段<br>财务目标</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">一人公司<br>无限可能</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">全栈技术<br>独立交付</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SITEMAP -->
+  <section class="sitemap-section">
+    <div class="section-label">
+      <div class="tag">网站结构规划</div>
+      <div class="line"></div>
+    </div>
+    <div class="sitemap-grid">
+      <div class="sitemap-col">
+        <div class="sitemap-page">🏠 首页</div>
+        <div class="sitemap-item">Hero 主视觉区</div>
+        <div class="sitemap-item">个人价值主张</div>
+        <div class="sitemap-item">服务概览入口</div>
+        <div class="sitemap-item">精选案例预览</div>
+        <div class="sitemap-item">博客最新文章</div>
+        <div class="sitemap-item">公众号引流区</div>
+      </div>
+      <div class="sitemap-col">
+        <div class="sitemap-page">👤 关于我</div>
+        <div class="sitemap-item">个人故事背景</div>
+        <div class="sitemap-item">核心技术栈</div>
+        <div class="sitemap-item">思维与价值观</div>
+        <div class="sitemap-item">成长时间线</div>
+        <div class="sitemap-item">媒体 / 资质</div>
+      </div>
+      <div class="sitemap-col">
+        <div class="sitemap-page">💼 服务</div>
+        <div class="sitemap-item">网站 / 小程序开发</div>
+        <div class="sitemap-item">自动化工具定制</div>
+        <div class="sitemap-item">数字资源提供</div>
+        <div class="sitemap-item">创业经验咨询</div>
+        <div class="sitemap-item">服务定价说明</div>
+        <div class="sitemap-item">需求提交表单</div>
+      </div>
+      <div class="sitemap-col">
+        <div class="sitemap-page">✍️ 博客</div>
+        <div class="sitemap-item">创业认知思维</div>
+        <div class="sitemap-item">技术实战分享</div>
+        <div class="sitemap-item">产品设计心得</div>
+        <div class="sitemap-item">读书与工具推荐</div>
+        <div class="sitemap-item">标签 / 分类系统</div>
+      </div>
+      <div class="sitemap-col">
+        <div class="sitemap-page">📦 资源库</div>
+        <div class="sitemap-item">数字音视频资源</div>
+        <div class="sitemap-item">电子书精选</div>
+        <div class="sitemap-item">工具模板下载</div>
+        <div class="sitemap-item">付费专属内容</div>
+        <div class="sitemap-item">联系 / 合作入口</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="section">
+    <div class="section-label">
+      <div class="tag">核心服务模块</div>
+      <div class="line"></div>
+    </div>
+    <h2 class="section-title">我能为你<em>提供</em>什么</h2>
+    <p class="section-desc">每一项服务都经过精心打磨，以独立开发者的效率，交付企业级的品质。</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">&lt;/&gt;</div>
+        <div class="service-name">产品开发</div>
+        <div class="service-desc">网站、小程序、自动化工具的全栈独立开发，从需求分析到上线运维一站式交付。</div>
+        <div class="service-tag">前端 · 后端 · 运维</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">◈</div>
+        <div class="service-name">数字资源</div>
+        <div class="service-desc">精选绝版音视频资源、专业电子书整理与提供，稀缺内容的整合与分发。</div>
+        <div class="service-tag">知识付费</div>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">✦</div>
+        <div class="service-name">创业咨询</div>
+        <div class="service-desc">一人公司的构建路径、变现策略、个人品牌打造，分享亲历的创业认知与经验。</div>
+        <div class="service-tag">1V1 咨询</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section">
+    <div class="section-label">
+      <div class="tag">关于我</div>
+      <div class="line"></div>
+    </div>
+    <div class="about-grid">
+      <div>
+        <blockquote class="about-quote">我的内心有两个自己——一个追求宁静与智慧，一个渴望财富与成就。这个网站，是两者达成和解的产物。</blockquote>
+        <p class="about-body">在 AI 重塑一切的时代，我选择用技术构建属于自己的护城河。全栈开发能力让我可以独立完成任何数字产品，而对底层商业逻辑的思考，让我知道如何让技术真正产生价值。</p>
+      </div>
+      <div>
+        <div class="skills-list">
+          <div class="skill-row">
+            <div class="skill-name">Frontend</div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width:92%"></div>
+            </div>
+            <div class="skill-pct">92%</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">Backend</div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width:85%"></div>
+            </div>
+            <div class="skill-pct">85%</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">DevOps</div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width:78%"></div>
+            </div>
+            <div class="skill-pct">78%</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">Product</div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width:88%"></div>
+            </div>
+            <div class="skill-pct">88%</div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-name">Marketing</div>
+            <div class="skill-bar">
+              <div class="skill-fill" style="width:70%"></div>
+            </div>
+            <div class="skill-pct">70%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="section">
+    <div class="section-label">
+      <div class="tag">博客 · 认知输出</div>
+      <div class="line"></div>
+    </div>
+    <h2 class="section-title">思考即<em>资产</em></h2>
+    <p class="section-desc">记录创业过程中的认知升级、技术实战与底层思考，每篇文章都是一次认真的输出。</p>
+    <div class="blog-grid">
+      <div class="blog-card featured">
+        <div class="blog-num">01</div>
+        <div class="blog-cat">创业认知</div>
+        <div class="blog-title">AI 时代的个人护城河：为什么一人公司是普通人唯一的出路</div>
+        <div class="blog-excerpt">当大公司开始用 AI 替代大量岗位，打工人的终局已经清晰可见。本文分析为什么构建个人品牌和一人公司，是普通技术人在新时代最优的生存策略…</div>
+        <div class="blog-meta">2024-12-01 · 阅读 8 分钟</div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-num">02</div>
+        <div class="blog-cat">技术实战</div>
+        <div class="blog-title">从零搭建个人品牌网站的完整技术方案</div>
+        <div class="blog-excerpt">选型、部署、SEO、CDN 全栈实战记录。</div>
+        <div class="blog-meta">2024-11-20 · 阅读 6 分钟</div>
+      </div>
+      <div class="blog-card">
+        <div class="blog-num">03</div>
+        <div class="blog-cat">产品思维</div>
+        <div class="blog-title">如何用最小成本验证一个付费产品想法</div>
+        <div class="blog-excerpt">MVP 思维在个人创业中的实际应用案例。</div>
+        <div class="blog-meta">2024-11-10 · 阅读 5 分钟</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="cta-label">// 开始合作</div>
+    <h2 class="cta-title">你有想法，我来实现</h2>
+    <p class="cta-sub">无论是产品开发、资源咨询，还是深度 1V1 交流，欢迎随时联系。</p>
+    <div class="btn-primary" style="display:inline-block; padding: 14px 40px; font-size: 12px;">立即预约合作 →</div>
+    <div class="qr-row">
+      <div class="qr-box">
+        <div class="qr-placeholder">▦</div>
+        <div class="qr-label">微信公众号</div>
+      </div>
+      <div class="qr-box">
+        <div class="qr-placeholder">▦</div>
+        <div class="qr-label">微信个人号</div>
+      </div>
+      <div class="qr-box">
+        <div class="qr-placeholder">▦</div>
+        <div class="qr-label">知识星球</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-copy">© 2024 YOURNAME · 用技术创造价值</div>
+    <div class="footer-links">
+      <a href="#">隐私政策</a>
+      <a href="#">服务条款</a>
+      <a href="#">RSS 订阅</a>
+      <a href="#">站点地图</a>
+    </div>
+  </footer>
+
+</body>
+
+</html>
