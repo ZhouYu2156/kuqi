@@ -1,193 +1,40 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
-/* 秘术云阁 · 黑金（强化层次：深墨底 + 金点缀，少描边、多光影） */
-:root {
-  --gold: #c9a84c;
-  --gold-light: #e8c97a;
-  --gold-dim: #8a6d2f;
-  --black: #0a0a0a;
-  --dark: #111111;
-  --card: #141414;
-  --brand-border: rgba(201, 168, 76, 0.18);
-  --text: #f0ebe0;
-  --text-muted: #8a8070;
-  --font-display: 'Playfair Display', ui-serif, Georgia, serif;
-  --font-body: 'Noto Serif SC', 'Songti SC', serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+@font-face {
+  font-family: 'FZHanZhenGuangBiao';
+  src: url('../fonts/FZHanZhenGuangBiao.woff2') format('woff2');
 }
-
-html:not(.dark) {
-  --text: #141210;
-  --text-muted: #5c564c;
-  --card: #fbf9f5;
-  --brand-border: rgba(201, 168, 76, 0.22);
-  --black: #f7f3eb;
+@font-face {
+  font-family: 'PingFangSC';
+  src: url('../fonts/PingFangSC.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Quicksand-Bold';
+  src: url('../fonts/Quicksand-Bold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'ZKKuaiLeTi';
+  src: url('../fonts/ZKKuaiLeTi.woff2') format('woff2');
 }
 
 @theme {
-  --font-sans: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --font-serif: 'Noto Serif SC', 'Songti SC', serif;
-
-  --color-brand-50: #faf8f4;
-  --color-brand-100: #f0e8d8;
-  --color-brand-200: #e5d4b8;
-  --color-brand-300: #d4bc88;
-  --color-brand-400: #d4b456;
-  --color-brand-500: #c9a84c;
-  --color-brand-600: #a88b3a;
-  --color-brand-700: #8a6d2f;
-  --color-brand-800: #6e5828;
-  --color-brand-900: #4a3c1c;
-  --color-brand-950: #1f1a0f;
+  --font-FZHanZhenGuangBiao: 'FZHanZhenGuangBiao';
+  --font-PingFangSC: 'PingFangSC';
+  --font-Quicksand-Bold: 'Quicksand-Bold';
+  --font-ZKKuaiLeTi: 'ZKKuaiLeTi';
 }
 
-html:not(.dark) body {
-  background: #f7f3eb;
-  color: var(--text);
+/* View Transitions：主题切换整页渐隐（与 vuejs.org 同类根过渡） */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.5s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.dark body {
-  background: #050505;
-  color: var(--text);
-}
-
-.dark body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 100% 80% at 50% -30%, rgba(201, 168, 76, 0.09), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 100% 50%, rgba(201, 168, 76, 0.04), transparent 45%);
-  z-index: -1;
-}
-
-.font-display {
-  font-family: var(--font-display);
-}
-
-.font-mono-site {
-  font-family: var(--font-mono);
-}
-
-/* 主 CTA：金底 + 浓墨字，任意主题下可读 */
-.btn-gold-solid {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  line-height: 1.25;
-  color: #0a0a0a !important;
-  background: linear-gradient(165deg, #e8c97a 0%, #c9a84c 45%, #a88b3a 100%);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.22) inset,
-    0 8px 32px rgba(201, 168, 76, 0.28);
-  transition: filter 0.15s ease, box-shadow 0.15s ease;
-}
-.btn-gold-solid:hover {
-  filter: brightness(1.06);
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.28) inset,
-    0 12px 36px rgba(201, 168, 76, 0.35);
-}
-
-/* 表面块：无描边，靠明暗与阴影分区 */
-.surface-soft {
-  border-radius: 0.75rem;
-  background: color-mix(in oklab, var(--card) 100%, transparent);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-}
-.dark .surface-soft {
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.45);
-}
-
-*::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
-}
-.dark *::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-html:not(.dark) *::-webkit-scrollbar-track {
-  background: #e5dfd4;
-}
-*::-webkit-scrollbar-thumb {
-  background: var(--gold-dim);
-  border-radius: 4px;
-}
-
-.site-container {
-  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
-}
-
-.site-gold-line {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    color-mix(in oklab, var(--gold) 35%, transparent),
-    transparent
-  );
-  height: 1px;
-}
-
-.qr-frame {
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: var(--card);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
-}
-.dark .qr-frame {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-html:not(.dark) .qr-frame {
-  background: #fffefb;
-}
-
-.qr-frame img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-}
-
-.qr-frame--square {
-  aspect-ratio: 1;
-}
-
-.qr-frame--banner {
-  max-width: 100%;
-}
-
-.qr-caption {
-  font-family: var(--font-mono);
-  font-size: 0.625rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-top: 0.625rem;
-  text-align: center;
-}
-
-/* JK 布局：主色由 useJkTheme 覆盖；暗色模式页底为暗系紫 */
-.jk-theme {
-  --jk-primary: #00dc82;
-  --jk-primary-soft: rgba(0, 220, 130, 0.12);
-  --jk-ring: rgba(0, 220, 130, 0.35);
-  --jk-bg-dark: #16101f;
-  --jk-bg-dark-elevated: #1e1628;
-  /** 暗色下输入框背景（略亮于底、偏紫灰，避免死黑） */
-  --jk-input-surface-dark: #2e2640;
-}
-
-.jk-heading {
-  color: var(--jk-primary);
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
 }

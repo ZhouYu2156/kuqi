@@ -13,72 +13,78 @@ const emit = defineEmits<{
   pause: []
   download: [music: MusicItem]
 }>()
+
+const columns = [
+  { accessorKey: 'SongName', header: '歌名' },
+  { accessorKey: 'SingerName', header: '歌手' },
+  { id: 'actions', header: '操作' },
+] as const
+
+function isCurrentPlaying(row: MusicItem, current: MusicDetailItem | null, playing: boolean) {
+  return playing && current?.encode_album_audio_id === row.EMixSongID
+}
 </script>
 
 <template>
-  <div class="overflow-x-auto shadow-md">
-    <!-- 骨架屏 -->
-    <JKSkeleton
+  <div class="overflow-x-auto rounded-lg border border-default shadow-sm">
+    <div
       v-if="loading"
-      :rows="8" />
+      class="divide-y divide-default p-4">
+      <USkeleton
+        v-for="n in 8"
+        :key="n"
+        class="h-11 w-full" />
+    </div>
 
-    <!-- 实际表格 -->
-    <el-table
+    <UTable
       v-else
-      :data="lists as MusicItem[]"
-      style="width: 100%">
-      <!-- 歌名列 -->
-      <el-table-column
-        label="歌名"
-        min-width="280">
-        <template #default="{ row }: { row: MusicItem }">
-          <div class="flex items-center">
-            <span
-              class="truncate"
-              :title="row.SongName"
-              >{{ row.SongName }}</span
-            >
-          </div>
-        </template>
-      </el-table-column>
+      :data="lists"
+      :columns="[...columns]"
+      class="min-w-full">
+      <template #SongName-cell="{ row }">
+        <span
+          class="block max-w-[min(100%,280px)] truncate font-medium text-highlighted"
+          :title="row.original.SongName">
+          {{ row.original.SongName }}
+        </span>
+      </template>
 
-      <!-- 歌手列 -->
-      <el-table-column
-        prop="singer"
-        label="歌手"
-        min-width="120">
-        <template #default="{ row }: { row: MusicItem }">
-          <span
-            class="truncate"
-            :title="row.SingerName"
-            >{{ row.SingerName }}</span
-          >
-        </template>
-      </el-table-column>
+      <template #SingerName-cell="{ row }">
+        <span
+          class="block max-w-[min(100%,200px)] truncate text-muted"
+          :title="row.original.SingerName">
+          {{ row.original.SingerName }}
+        </span>
+      </template>
 
-      <!-- 操作列 -->
-      <el-table-column
-        label="操作"
-        width="120"
-        fixed="right">
-        <template #default="{ row }: { row: MusicItem }">
-          <div class="flex items-center gap-2">
-            <el-button
-              circle
-              type="primary"
-              :icon="currentMusic?.encode_album_audio_id === row.EMixSongID && isPlaying ? 'VideoPause' : 'VideoPlay'"
-              @click="
-                currentMusic?.encode_album_audio_id === row.EMixSongID && isPlaying ? emit('pause') : emit('play', row)
-              " />
-            <el-button
-              type="info"
-              :class="['download-btn', 'dark:bg-primary-400 dark:hover:bg-primary-500 dark:border-primary-400']"
-              :icon="'Download'"
-              circle
-              @click="emit('download', row)" />
-          </div>
-        </template>
-      </el-table-column>
-    </el-table>
+      <template #actions-cell="{ row }">
+        <div class="flex items-center gap-2">
+          <UButton
+            color="primary"
+            variant="solid"
+            size="sm"
+            square
+            :icon="
+              isCurrentPlaying(row.original, currentMusic, isPlaying)
+                ? 'i-lucide-pause'
+                : 'i-lucide-play'
+            "
+            :aria-label="isCurrentPlaying(row.original, currentMusic, isPlaying) ? '暂停' : '播放'"
+            @click="
+              isCurrentPlaying(row.original, currentMusic, isPlaying)
+                ? emit('pause')
+                : emit('play', row.original)
+            " />
+          <UButton
+            color="neutral"
+            variant="outline"
+            size="sm"
+            square
+            icon="i-lucide-download"
+            aria-label="下载"
+            @click="emit('download', row.original)" />
+        </div>
+      </template>
+    </UTable>
   </div>
 </template>

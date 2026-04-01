@@ -1,82 +1,118 @@
 <script setup lang="ts">
-definePageMeta({
-  layout: 'jk',
-})
+import type { PageHeroProps, PageSectionProps } from '@nuxt/ui'
 
 useHead({
   title: '首页',
 })
+
+const stack = [
+  {
+    name: 'Vue 3',
+    icon: 'i-vscode-icons-file-type-vue',
+    desc: '组合式 API、响应式模型与庞大生态，交付快、可维护性强。',
+  },
+  {
+    name: 'TypeScript',
+    icon: 'i-vscode-icons-file-type-typescript-official',
+    desc: '静态类型约束，减少线上低级错误，重构与协作更安心。',
+  },
+  {
+    name: 'Nuxt',
+    icon: 'i-vscode-icons-file-type-nuxt',
+    desc: '文件路由、SSR/SSG、服务端能力开箱即用，全栈一体。',
+  },
+  {
+    name: 'Sass',
+    icon: 'i-vscode-icons-file-type-sass',
+    desc: '变量、嵌套与 mixin，复杂样式模块化，易与设计对齐。',
+  },
+  {
+    name: 'TailwindCSS',
+    icon: 'i-vscode-icons-file-type-tailwind',
+    desc: '原子化工具类，界面迭代快、包体可控，与设计系统契合。',
+  },
+  {
+    name: 'Nuxt UI',
+    icon: 'i-simple-icons:nuxtdotjs',
+    desc: '与 Nuxt 深度集成，主题与无障碍友好，界面一致性好。',
+  },
+] as const
+
+const heroImage = 'https://picsum.photos/seed/geektux/960/720'
+
+const heroLinks = [
+  {
+    label: '即刻听',
+    to: '/music',
+    size: 'xl' as const,
+    class:
+      'min-h-14 min-w-40 px-8 text-base font-semibold bg-emerald-600 text-white hover:bg-emerald-700 sm:min-h-16 sm:text-lg dark:bg-emerald-500 dark:hover:bg-emerald-400',
+  },
+]
+
+const heroUi: PageHeroProps['ui'] = {
+  headline: 'mb-3 text-sm font-medium uppercase tracking-widest text-emerald-600 dark:text-emerald-400',
+  title: 'text-5xl font-bold tracking-tight text-highlighted sm:text-6xl md:text-7xl lg:text-8xl',
+  description: 'mt-4 text-xl text-muted sm:text-2xl',
+  links: 'mt-8 gap-4 sm:mt-10',
+  /** 收紧默认过大的上下留白（主题默认 py-24+） */
+  container:
+    'flex flex-col gap-8 py-8 sm:gap-y-10 sm:py-10 lg:grid lg:grid-cols-2 lg:items-center lg:gap-x-10 lg:gap-y-0 lg:py-24',
+}
+
+const sectionUi: PageSectionProps['ui'] = {
+  body: 'mt-10 sm:mt-12',
+}
 </script>
 
 <template>
-  <div>
-    <JKPageHero>
-      <template #actions>
-        <NuxtLink
-          to="/music"
-          class="inline-flex items-center justify-center rounded-lg px-8 py-3 text-sm font-semibold text-gray-950 shadow-lg hover:opacity-90 dark:text-gray-950"
-          :style="{
-            background: 'var(--jk-primary)',
-            boxShadow: '0 12px 40px color-mix(in oklab, var(--jk-primary) 35%, transparent)',
-          }">
-          即刻听音乐
-        </NuxtLink>
-        <NuxtLink
-          to="/learn"
-          class="inline-flex items-center justify-center rounded-lg border px-8 py-3 text-sm font-medium transition-colors hover:bg-(--jk-primary-soft)"
-          :style="{ borderColor: 'color-mix(in oklab, var(--jk-primary) 45%, transparent)', color: 'var(--jk-primary)' }">
-          视频教程
-        </NuxtLink>
-        <NuxtLink
-          to="/login"
-          class="inline-flex items-center justify-center rounded-lg border border-zinc-300 px-6 py-3 text-sm text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-white/15 dark:text-gray-300 dark:hover:bg-white/5">
-          登录 / 开通权益
-        </NuxtLink>
-      </template>
-    </JKPageHero>
+  <UPageHero
+    orientation="horizontal"
+    headline="SOFTWARE DEVELOPMENT STUDIO"
+    title="极客兔"
+    description="一家只做优质服务的软件开发工作室"
+    :links="heroLinks"
+    :ui="heroUi">
+    <template #default>
+      <img
+        :src="heroImage"
+        width="960"
+        height="720"
+        alt=""
+        class="mx-auto w-full max-w-lg rounded-2xl border border-neutral-200/80 shadow-xl ring-1 ring-black/5 lg:mx-0 lg:ml-auto dark:border-white/10 dark:ring-white/10"
+        loading="eager"
+        fetchpriority="high" />
+    </template>
+  </UPageHero>
 
-    <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-      <div class="grid gap-6 md:grid-cols-3">
-        <div
-          class="rounded-2xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-white/10 dark:bg-[color-mix(in_oklab,var(--jk-bg-dark-elevated)_85%,transparent)]">
-          <div class="text-2xl text-(--jk-primary)">♪</div>
-          <h3 class="mt-3 text-lg font-semibold text-zinc-900 dark:text-white">音乐模块</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-gray-400">
-            沿用现有搜索与播放能力，可扩展会员曲库、下载与歌单（接口层已统一响应格式）。
-          </p>
-          <NuxtLink
-            to="/music"
-            class="mt-4 inline-block text-sm font-medium text-(--jk-primary) hover:underline">
-            进入音乐 →
-          </NuxtLink>
-        </div>
-        <div
-          class="rounded-2xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-white/10 dark:bg-[color-mix(in_oklab,var(--jk-bg-dark-elevated)_85%,transparent)]">
-          <div class="text-2xl text-(--jk-primary)">▶</div>
-          <h3 class="mt-3 text-lg font-semibold text-zinc-900 dark:text-white">视频教程</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-gray-400">
-            个人课程页占位已就绪；后续接入视频源、订单与「仅会员可看」需配合鉴权中间件。
-          </p>
-          <NuxtLink
-            to="/learn"
-            class="mt-4 inline-block text-sm font-medium text-(--jk-primary) hover:underline">
-            查看课程 →
-          </NuxtLink>
-        </div>
-        <div
-          class="rounded-2xl border border-zinc-200/80 bg-white/80 p-6 shadow-sm dark:border-white/10 dark:bg-[color-mix(in_oklab,var(--jk-bg-dark-elevated)_85%,transparent)]">
-          <div class="text-2xl text-(--jk-primary)">◇</div>
-          <h3 class="mt-3 text-lg font-semibold text-zinc-900 dark:text-white">会员与后台</h3>
-          <p class="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-gray-400">
-            角色含 guest / user / vip / admin；管理员可使用后台扩展用户与订单管理。
-          </p>
-          <NuxtLink
-            to="/login"
-            class="mt-4 inline-block text-sm font-medium text-(--jk-primary) hover:underline">
-            去登录 →
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
-  </div>
+  <UPageSection
+    title="技术栈"
+    description="当前项目采用的是最新的主流框架和技术栈开发。"
+    orientation="vertical"
+    class="border-t border-neutral-200 bg-neutral-50/50 dark:border-white/10 dark:bg-neutral-900/30"
+    :ui="sectionUi">
+    <template #body>
+      <UPageGrid class="gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <UCard
+          v-for="item in stack"
+          :key="item.name"
+          variant="outline"
+          class="h-full">
+          <div class="flex gap-3">
+            <UIcon
+              :name="item.icon"
+              class="text-primary size-9 shrink-0" />
+            <div class="min-w-0">
+              <p class="font-semibold text-highlighted">
+                {{ item.name }}
+              </p>
+              <p class="text-muted mt-1 text-sm leading-relaxed">
+                {{ item.desc }}
+              </p>
+            </div>
+          </div>
+        </UCard>
+      </UPageGrid>
+    </template>
+  </UPageSection>
 </template>

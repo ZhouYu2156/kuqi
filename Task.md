@@ -1,0 +1,1 @@
+请你尽量使用纯 tailwindcss v4 的样式 ，和 Nuxt UI v4 版本的组件帮我搭建这个项目界面框架，包括导航栏（左边Logo，中间有首页、音乐、教程、博客导航项，右边有暗色和亮色的主题切换、Github社交图标、Bilibili社交图标），中间是Landing，左右布局，左边是大标题（文案：极客兔）、副标题（一家只做优质服务的软件开发工作室）、右边是 picsum 提供的在线图片，接着是我的项目使用的技术栈UCard Grid：Vue 3、TypeScript、Nuxt、Sass、TailwindCSS、Element Plus、Nuxt UI，页脚写上我的版权信息，页面具备响应式，小屏时能够展开菜单等操作。
