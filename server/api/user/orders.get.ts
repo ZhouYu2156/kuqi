@@ -41,22 +41,29 @@ export default defineEventHandler(async (event) => {
     ? Math.min(MAX_PAGE_SIZE, Math.max(1, Math.floor(sizeRaw)))
     : DEFAULT_PAGE_SIZE
 
-  const [countRows] = await db.query<RowDataPacket[]>(
-    `SELECT COUNT(*) AS c FROM member_orders WHERE user_id = ? AND deleted_at IS NULL`,
-    [uid],
-  )
+  let countRows: RowDataPacket[]
+  let rows: MemberOrderRow[]
+  try {
+    ;[countRows] = await db.query<RowDataPacket[]>(
+      `SELECT COUNT(*) AS c FROM member_orders WHERE user_id = ? AND deleted_at IS NULL`,
+      [uid],
+    )
+    const offset = (page - 1) * pageSize
+    ;[rows] = await db.query<MemberOrderRow[]>(
+      `SELECT id, out_trade_no, amount, description, vip_type, trade_state, transaction_id, created_at
+       FROM member_orders
+       WHERE user_id = ? AND deleted_at IS NULL
+       ORDER BY created_at DESC
+       LIMIT ? OFFSET ?`,
+      [uid, pageSize, offset],
+    )
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err)
+    console.error('[orders.get] DB error:', msg)
+    return UnionResponseResult(null as unknown as UserOrdersData, `订单查询失败：${msg}`, ResponseCode.ServerError)
+  }
+
   const total = Number((countRows[0] as { c: number | string } | undefined)?.c ?? 0)
-
-  const offset = (page - 1) * pageSize
-
-  const [rows] = await db.query<MemberOrderRow[]>(
-    `SELECT id, out_trade_no, amount, description, vip_type, trade_state, transaction_id, created_at
-     FROM member_orders
-     WHERE user_id = ? AND deleted_at IS NULL
-     ORDER BY created_at DESC
-     LIMIT ? OFFSET ?`,
-    [uid, pageSize, offset],
-  )
 
   const list = rows.map((r) => ({
     id: Number(r.id),
