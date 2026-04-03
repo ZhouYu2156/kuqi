@@ -1,6 +1,9 @@
 <script setup lang="ts">
-useHead({
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
+
+usePageSeo({
   title: '即刻听',
+  description: SEO_PAGE_DESCRIPTION.music,
 })
 </script>
 

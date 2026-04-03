@@ -1,4 +1,5 @@
 import tailwindcss from '@tailwindcss/vite'
+import { SEO_DEFAULT_DESCRIPTION, SEO_KEYWORDS, SITE_NAME } from './shared/constants/seo'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -19,10 +20,18 @@ export default defineNuxtConfig({
     /** 587 端口是否强制 requireTLS；默认 false，由 nodemailer 协商 STARTTLS（QQ 等更稳） */
     emailUseTls: process.env.EMAIL_USE_TLS === 'true',
     public: {
+      /** 站点品牌（SEO title、Open Graph） */
+      siteName: SITE_NAME,
+      /** 线上站点根 URL，无尾斜杠；用于 canonical、og:url、JSON-LD、sitemap */
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || '',
+      seoDescription: SEO_DEFAULT_DESCRIPTION,
+      seoKeywords: SEO_KEYWORDS,
+      /** 可选：Open Graph 分享图绝对 URL */
+      ogImage: process.env.NUXT_PUBLIC_OG_IMAGE || '',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE ?? '',
       /**
        * 留空 = 请求发往「当前页面」同源（推荐本地与线上 Nginx 反代）。
-       * 切勿写死 http://127.0.0.1:3000：若用 http://localhost:3000 打开站点，会与 API 不同源，
-       * 浏览器跨域且默认无 CORS，表现为 Failed to fetch / &lt;no response&gt;。
+       * 切勿写死 http://127.0.0.1:3000：若用 http://localhost:3000 打开站点，会与 API 不同源。
        * 需指向其它机器时再设 NUXT_PUBLIC_API_BASE。
        */
     },
@@ -45,19 +54,21 @@ export default defineNuxtConfig({
   },*/
   app: {
     head: {
-      title: '极客兔',
-      titleTemplate: '%s ❤️ 极客兔',
+      title: SITE_NAME,
       htmlAttrs: {
         lang: 'zh-CN',
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'keywords', content: '绝版资源' },
-        {
-          name: 'description',
-          content: '一人公司产品化与创业陪跑；全栈交付、轻量咨询与月度陪跑；面向独立开发者。',
-        },
+        { name: 'description', content: SEO_DEFAULT_DESCRIPTION },
+        { name: 'keywords', content: SEO_KEYWORDS },
+        { name: 'author', content: SITE_NAME },
+        { property: 'og:site_name', content: SITE_NAME },
+        { property: 'og:type', content: 'website' },
+        { property: 'og:locale', content: 'zh_CN' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'format-detection', content: 'telephone=no' },
       ],
       link: [
         {

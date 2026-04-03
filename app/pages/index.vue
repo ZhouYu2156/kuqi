@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { PageHeroProps, PageSectionProps } from '@nuxt/ui'
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
 
-useHead({
+usePageSeo({
   title: '首页',
+  isHome: true,
+  description: SEO_PAGE_DESCRIPTION.home,
 })
 
 const stack = [

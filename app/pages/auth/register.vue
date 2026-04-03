@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import type { AuthTokenData, SendEmailCodeData } from '~~/shared/types/api/auth'
 import { ResponseCode } from '~~/shared/types'
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
 
 definePageMeta({
   middleware: ['guest'],
 })
 
-useHead({
+usePageSeo({
   title: '注册',
+  description: SEO_PAGE_DESCRIPTION.register,
+  noindex: true,
 })
 
 const toast = useToast()

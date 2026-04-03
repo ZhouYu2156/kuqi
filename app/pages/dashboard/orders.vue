@@ -7,8 +7,12 @@ definePageMeta({
   middleware: ['auth'],
 })
 
-useHead({
-  title: '历史订单 — 个人中心',
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
+
+usePageSeo({
+  title: '历史订单',
+  description: SEO_PAGE_DESCRIPTION.orders,
+  noindex: true,
 })
 
 const { api } = useApi()

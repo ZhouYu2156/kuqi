@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AuthTokenData } from '~~/shared/types/api/auth'
 import { ResponseCode } from '~~/shared/types'
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
 import { greetingMessage } from '~~/shared/utils'
 
 /** 勾选「记住我」后持久化邮箱（仅邮箱，不保存密码） */
@@ -10,8 +11,10 @@ definePageMeta({
   middleware: ['guest'],
 })
 
-useHead({
+usePageSeo({
   title: '登录',
+  description: SEO_PAGE_DESCRIPTION.login,
+  noindex: true,
 })
 
 const { api } = useApi()

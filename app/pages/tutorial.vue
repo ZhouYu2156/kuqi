@@ -1,6 +1,9 @@
 <script setup lang="ts">
-useHead({
-  title: '教程',
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
+
+usePageSeo({
+  title: '优质教程',
+  description: SEO_PAGE_DESCRIPTION.tutorial,
 })
 
 const tutorials = []

@@ -3,8 +3,12 @@ definePageMeta({
   middleware: ['auth'],
 })
 
-useHead({
+import { SEO_PAGE_DESCRIPTION } from '~~/shared/constants/seo'
+
+usePageSeo({
   title: '个人中心',
+  description: SEO_PAGE_DESCRIPTION.dashboard,
+  noindex: true,
 })
 
 const route = useRoute()
