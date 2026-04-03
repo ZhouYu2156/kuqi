@@ -5,16 +5,12 @@ import * as path from 'path'
 
 /**
  * 加载私钥文件
- * @param pemPath 私钥.pem文件路径
- * @returns 私钥内容字符串
+ * @param pemPath 私钥路径：建议相对「进程工作目录」（一般为项目根，与 .env 同级），如 `wxcert/apiclient_key.pem`；或填绝对路径（云上推荐）
  */
 export function loadPrivateKey(pemPath: string): string {
-  // Windows下import.meta.url为file:///E:/...，路径多出一个开头的/，需要处理，否则找不到文件
-  let dirname = path.dirname(new URL(import.meta.url).pathname)
-  if (process.platform === 'win32' && dirname.startsWith('/')) {
-    dirname = dirname.slice(1)
-  }
-  const absolutePath = path.resolve(dirname, pemPath)
+  const absolutePath = path.isAbsolute(pemPath)
+    ? pemPath
+    : path.resolve(process.cwd(), pemPath)
   const key = fs.readFileSync(absolutePath, 'utf8')
   return key
 }

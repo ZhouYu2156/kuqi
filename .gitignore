@@ -1,5 +1,6 @@
 # Nuxt dev/build outputs
 .output
+company
 .data
 .nuxt
 .nitro
@@ -8,6 +9,10 @@ dist
 wxcert
 .env
 test
+build
+build.zip
+dist.zip
+public/uploads/
 # Node dependencies
 node_modules
 
@@ -19,6 +24,10 @@ logs
 .DS_Store
 .fleet
 .idea
+
+# 用户上传头像（保留目录）
+public/uploads/avatars/*
+!public/uploads/avatars/.gitkeep
 
 # Local env files
 .env

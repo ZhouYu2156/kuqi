@@ -1,8 +1,12 @@
+import { config } from 'dotenv'
 import crypto from 'node:crypto'
 import type { MusicDetailItem, MusicItem } from '~~/shared/types'
 
+config()
+
 /** ------------------------- 音乐模块签名相关函数 ------------------------- */
-const token = '6939c94fb3f6a910bece970ccbd5439dc451d1001e349d7ce1ed38cc92465310'
+// const token = '6939c94fb3f6a910bece970ccbd5439dc451d1001e349d7ce1ed38cc92465310'
+const token = process.env.KUGOU_TOKEN
 const headers = {
   'User-Agent':
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36',
@@ -148,7 +152,6 @@ export async function getSearchMusicList(kw: string, page: number, pagesize: num
     status: number
     error_code: number
   }
-  console.log('kugou search response:', jsonStr[1])
   const result = JSON.parse(jsonStr[1]) as KugouSearchResponse
 
   return result.data
@@ -177,10 +180,10 @@ export async function getMusicDetail(audioId: string) {
     userid: process.env.KUGOU_USER_ID,
     signature: signature,
   }
-  const response = await $fetch<MusicDetailItem>(targetUrl, {
+  const response = await $fetch<{ data: MusicDetailItem; error_code: number; status: number }>(targetUrl, {
     method: 'GET',
     headers,
     params: payload,
   })
-  return response
+  return response.data
 }

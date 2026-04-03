@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { OrderStatus } from '~~/shared/types'
+import type { OrderStatus } from '~~/shared/types/db/order'
 
 defineProps<{
   qrCode: string
@@ -8,170 +8,218 @@ defineProps<{
 </script>
 
 <template>
-  <div class="qr-code-container">
-    <!-- 二维码图片 -->
-    <div class="qr-code-wrapper">
-      <img
-        :src="qrCode"
-        alt="支付二维码"
-        class="qr-code-image" />
+  <!-- w-fit + shrink-0：避免在 UModal 的 flex 列中被纵向拉伸，导致子级 absolute 相对整块弹窗 -->
+  <div class="qr-code-root">
+    <div class="qr-code-card">
+      <!-- 固定像素框 + overflow-hidden：激光与四角只作用于本矩形，与 img 同尺寸 -->
+      <div class="qr-code-frame">
+        <img
+          :src="qrCode"
+          alt="支付二维码"
+          class="qr-code-image"
+          width="200"
+          height="200"
+          decoding="async" />
 
-      <!-- 扫描动画 -->
-      <div
-        v-if="status === OrderStatus.NOTPAY"
-        class="scan-animation">
-        <!-- 扫描线 -->
-        <div class="scan-line"></div>
-        <!-- 四个角的装饰 -->
-        <div class="scan-corner top-left"></div>
-        <div class="scan-corner top-right"></div>
-        <div class="scan-corner bottom-left"></div>
-        <div class="scan-corner bottom-right"></div>
-      </div>
+        <template v-if="status === OrderStatus.NOTPAY">
+          <div
+            class="qr-scan-layer"
+            aria-hidden="true">
+            <div class="laser-beam" />
+          </div>
+          <div
+            class="qr-corner qr-corner--tl"
+            aria-hidden="true" />
+          <div
+            class="qr-corner qr-corner--tr"
+            aria-hidden="true" />
+          <div
+            class="qr-corner qr-corner--bl"
+            aria-hidden="true" />
+          <div
+            class="qr-corner qr-corner--br"
+            aria-hidden="true" />
+        </template>
 
-      <!-- 已扫描遮罩 -->
-      <div
-        v-else-if="status === OrderStatus.SUCCESS"
-        class="scanned-overlay">
-        <div class="scanned-content">
-          <UIcon
-            name="i-lucide-check"
-            class="check-icon size-10" />
-          <span>已扫码</span>
+        <div
+          v-else-if="status === OrderStatus.SUCCESS"
+          class="state-overlay state-overlay--success">
+          <div class="scanned-content">
+            <UIcon
+              name="i-lucide-check"
+              class="check-icon size-10" />
+            <span>已扫码</span>
+          </div>
         </div>
-      </div>
 
-      <!-- 支付中遮罩 -->
-      <div
-        v-else-if="status === OrderStatus.USERPAYING"
-        class="paying-overlay">
-        <div class="paying-content">
-          <div class="loading-spinner" />
-          <span>正在支付...</span>
+        <div
+          v-else-if="status === OrderStatus.USERPAYING"
+          class="state-overlay state-overlay--paying">
+          <div class="paying-content">
+            <div class="loading-spinner" />
+            <span>正在支付...</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 状态提示文本 -->
-    <p class="status-text">
+    <p
+      v-if="status !== OrderStatus.NOTPAY"
+      class="status-text">
       {{
-        status === OrderStatus.NOTPAY
-          ? '请使用手机扫描二维码'
-          : status === OrderStatus.SUCCESS
-            ? '请在手机上确认支付'
-            : status === OrderStatus.USERPAYING
-              ? '正在处理支付...'
-              : '支付失败'
+        status === OrderStatus.SUCCESS
+          ? '请在手机上确认支付'
+          : status === OrderStatus.USERPAYING
+            ? '正在处理支付...'
+            : '支付失败'
       }}
     </p>
   </div>
 </template>
 
 <style scoped lang="scss">
-.qr-code-container {
-  @apply flex flex-col items-center;
+.qr-code-root {
+  @apply inline-flex w-fit max-w-full shrink-0 flex-col items-center;
 }
 
-.qr-code-wrapper {
-  @apply relative w-64 h-64 bg-white rounded-lg shadow-md overflow-hidden;
+.qr-code-card {
+  @apply rounded-xl bg-white p-3 shadow-md ring-1 ring-black/5 dark:bg-white dark:ring-white/10;
+}
+
+/*
+  必须用固定宽高，避免在 flex 父级里高度被撑满整屏，否则 absolute 子元素会相对「被拉高的框」
+  甚至误相对更外层定位，出现激光/四角贴到弹窗边的问题。
+*/
+.qr-code-frame {
+  position: relative;
+  z-index: 0;
+  width: 200px;
+  height: 200px;
+  max-width: min(200px, 85vw);
+  max-height: min(200px, 85vw);
+  overflow: hidden;
+  border-radius: 0.25rem;
+  flex-shrink: 0;
 }
 
 .qr-code-image {
-  @apply w-full h-full object-contain;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-// 扫描动画容器
-.scan-animation {
-  @apply absolute inset-0;
+/* 与 frame 完全重合（随 frame 缩放） */
+.qr-scan-layer {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  overflow: hidden;
   pointer-events: none;
+  box-sizing: border-box;
 }
 
-// 扫描线
-.scan-line {
-  @apply absolute top-0 h-full;
-  width: 120px; // 扫描线宽度
-  background: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(59, 130, 246, 0.05) 20%,
-    rgba(59, 130, 246, 0.2) 50%,
-    rgba(59, 130, 246, 0.05) 80%,
-    transparent 100%
-  );
-  animation: scanMove 2.5s ease-in-out infinite;
-}
-
-// 四个角的装饰
-.scan-corner {
-  @apply absolute w-8 h-8;
-  border-color: #3b82f6;
+/* 四角：直接相对 .qr-code-frame 定位（不再套一层，避免包含块歧义） */
+.qr-corner {
+  position: absolute;
+  z-index: 2;
+  width: 1.125rem;
+  height: 1.125rem;
   border-style: solid;
-  border-width: 2px;
-  opacity: 0.8;
-  animation: cornerFade 2.5s ease-in-out infinite;
+  border-color: rgb(59, 130, 246);
+  opacity: 0.92;
+  pointer-events: none;
+  box-sizing: border-box;
 }
 
-.top-left {
-  @apply top-2 left-2;
-  border-right: 0;
-  border-bottom: 0;
+.qr-corner--tl {
+  top: 3px;
+  left: 3px;
+  border-width: 3px 0 0 3px;
+  border-radius: 4px 0 0 0;
 }
 
-.top-right {
-  @apply top-2 right-2;
-  border-left: 0;
-  border-bottom: 0;
+.qr-corner--tr {
+  top: 3px;
+  right: 3px;
+  border-width: 3px 3px 0 0;
+  border-radius: 0 4px 0 0;
 }
 
-.bottom-left {
-  @apply bottom-2 left-2;
-  border-right: 0;
-  border-top: 0;
+.qr-corner--bl {
+  bottom: 3px;
+  left: 3px;
+  border-width: 0 0 3px 3px;
+  border-radius: 0 0 0 4px;
 }
 
-.bottom-right {
-  @apply bottom-2 right-2;
-  border-left: 0;
-  border-top: 0;
+.qr-corner--br {
+  right: 3px;
+  bottom: 3px;
+  border-width: 0 3px 3px 0;
+  border-radius: 0 0 4px 0;
 }
 
-// 扫描线移动动画
-@keyframes scanMove {
+/* 竖条光带在 .qr-scan-layer 内从左扫到右；阴影减弱，避免溢出观感像全屏 */
+.laser-beam {
+  position: absolute;
+  top: 0;
+  left: -38%;
+  height: 100%;
+  width: 38%;
+  min-width: 2.25rem;
+  max-width: 5rem;
+  background: linear-gradient(
+    90deg,
+    rgba(59, 130, 246, 0) 0%,
+    rgba(59, 130, 246, 0.08) 18%,
+    rgba(96, 165, 250, 0.55) 42%,
+    rgba(147, 197, 253, 0.95) 50%,
+    rgba(96, 165, 250, 0.55) 58%,
+    rgba(59, 130, 246, 0.08) 82%,
+    rgba(59, 130, 246, 0) 100%
+  );
+  animation: laserSweepLr 2.3s ease-in-out infinite;
+}
+
+@keyframes laserSweepLr {
   0% {
-    left: -120px; // 从屏幕左侧外开始
-    opacity: 0;
+    left: -38%;
+    opacity: 0.65;
   }
-  20% {
+  15% {
     opacity: 1;
   }
-  80% {
-    opacity: 0.85;
+  85% {
+    opacity: 1;
   }
   100% {
-    left: calc(100% + 120px); // 移动到屏幕右侧外
-    opacity: 0;
+    left: 100%;
+    opacity: 0.65;
   }
 }
 
-// 角落闪烁动画
-@keyframes cornerFade {
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-  50% {
-    opacity: 1;
-  }
+.state-overlay {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
 
-// 已扫描遮罩
-.scanned-overlay {
-  @apply absolute inset-0 bg-black/50 flex items-center justify-center;
+.state-overlay--success {
+  @apply bg-black/50;
   animation: fadeIn 0.3s ease-out;
 }
 
+.state-overlay--paying {
+  @apply bg-black/50;
+}
+
 .scanned-content {
-  @apply flex flex-col items-center text-white gap-2;
+  @apply flex flex-col items-center gap-2 text-white;
 
   .check-icon {
     @apply text-4xl text-green-400;
@@ -179,26 +227,19 @@ defineProps<{
   }
 }
 
-// 支付中遮罩
-.paying-overlay {
-  @apply absolute inset-0 bg-black/50 flex items-center justify-center;
-}
-
 .paying-content {
-  @apply flex flex-col items-center text-white gap-2;
+  @apply flex flex-col items-center gap-2 text-white;
 }
 
 .loading-spinner {
-  @apply w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full;
+  @apply h-8 w-8 rounded-full border-4 border-blue-400 border-t-transparent;
   animation: spin 1s linear infinite;
 }
 
-// 状态文本
 .status-text {
   @apply mt-4 text-sm text-gray-600 dark:text-gray-400;
 }
 
-// 动画关键帧
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -220,6 +261,14 @@ defineProps<{
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .laser-beam {
+    animation: none;
+    left: 31%;
+    opacity: 0.75;
   }
 }
 </style>

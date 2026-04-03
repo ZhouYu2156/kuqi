@@ -8,6 +8,10 @@ import {
 } from '~~/shared/types'
 
 const toast = useToast()
+const music = useMusicPlayback()
+
+const tableCurrentMusic = computed(() => music.currentMusic.value)
+const tableIsPlaying = computed(() => music.isPlaying.value)
 
 type ISearchState = {
   kw: string
@@ -35,33 +39,6 @@ const pageSizeItems = pageSizeOptions.map((size) => ({
   value: size,
 }))
 
-const quotaModalOpen = ref(false)
-const quotaModalMessage = ref('')
-let quotaModalResolve: ((value: boolean) => void) | null = null
-
-watch(quotaModalOpen, (open) => {
-  if (!open && quotaModalResolve) {
-    const res = quotaModalResolve
-    quotaModalResolve = null
-    res(false)
-  }
-})
-
-function openQuotaModal(message: string): Promise<boolean> {
-  quotaModalMessage.value = message
-  quotaModalOpen.value = true
-  return new Promise<boolean>((resolve) => {
-    quotaModalResolve = resolve
-  })
-}
-
-function onQuotaConfirm() {
-  const res = quotaModalResolve
-  quotaModalResolve = null
-  quotaModalOpen.value = false
-  res?.(true)
-}
-
 async function handleMusicSearch(overrideKeyword?: string) {
   if (overrideKeyword !== undefined) {
     searchState.value.kw = overrideKeyword
@@ -69,7 +46,7 @@ async function handleMusicSearch(overrideKeyword?: string) {
 
   const q = searchState.value.kw.trim()
   if (!q) {
-    toast.add({ title: '请输入关键词搜索', icon: 'i-lucide-search', color: 'neutral' })
+    toast.add({ title: '请输入关键词搜索', icon: 'i-lucide-search', color: 'warning' })
     return
   }
 
@@ -107,65 +84,60 @@ async function handleMusicSearch(overrideKeyword?: string) {
   searchState.value.isSearching = false
 }
 
+/**
+ * 监听页码和每页条数变化，重新搜索
+ */
 watch([() => searchState.value.page, () => searchState.value.pagesize], () => {
   if (!searchState.value.kw.trim()) return
   handleMusicSearch()
 })
 
-onMounted(() => {})
+const downloadState = ref<{ id: string; progress: number; label: string } | null>(null)
 
-class MusicPlayController {
-  isPlaying: boolean = false
-  currentMusic: MusicDetailItem | null = null
+async function downloadMusic(music: MusicItem) {
+  if (downloadState.value) return
+  if (!import.meta.client) return
 
-  constructor() {
-    this.isPlaying = false
-    this.currentMusic = null
-  }
+  const label = music.FileName?.trim() || `${music.SingerName} - ${music.SongName}`
+  const ext = (music.ExtName || 'mp3').replace(/^\./, '')
+  const filename = `${label}.${ext}`
 
-  playMusic = async (music: MusicItem) => {
-    try {
-      const response = await $fetch<UnionResponse<MusicDetailItem & { play_url?: string }>>('/api/music/', {
-        method: 'POST',
-        params: {
-          audioId: music.EMixSongID,
-        },
-        credentials: 'include',
-      })
+  downloadState.value = { id: music.EMixSongID, progress: 0, label }
 
-      if (response.code === ResponseCode.Unauthorized) {
-        toast.add({ title: response.message || '请先登录后再试听', color: 'warning' })
-        await navigateTo('/login')
-        return
-      }
-
-      if (response.code === ResponseCode.Forbidden) {
-        const go = await openQuotaModal(response.message || '今日免费试听额度已用完，可开通会员后继续畅听与下载。')
-        if (go) {
-          await navigateTo('/membership')
-        }
-        return
-      }
-
-      if (response.code !== ResponseCode.Success || !response.data?.play_url) {
-        toast.add({ title: response.message || '无法获取播放地址', color: 'error' })
-        return
-      }
-
-      this.currentMusic = response.data
-      this.isPlaying = true
-      const player = new Audio(response.data.play_url)
-      await player.play()
-    } catch (e) {
-      console.error(e)
-      toast.add({ title: '播放请求失败', color: 'error' })
+  try {
+    const detailRes = await $fetch<UnionResponse<MusicDetailItem>>('/api/music/detail', {
+      params: { audioId: music.EMixSongID },
+    })
+    if (detailRes.code !== ResponseCode.Success) {
+      toast.add({ title: detailRes.message, color: 'error', icon: 'i-lucide-circle-x' })
+      return
     }
+    const url = detailRes.data.play_url || detailRes.data.play_backup_url
+    if (!url) {
+      toast.add({ title: '暂无可用音频地址', color: 'error', icon: 'i-lucide-circle-x' })
+      return
+    }
+
+    const { blob } = await downloadAudioFromUrl(url, (ratio) => {
+      if (downloadState.value?.id !== music.EMixSongID) return
+      downloadState.value = {
+        id: music.EMixSongID,
+        progress: ratio,
+        label,
+      }
+    })
+    triggerBlobDownload(blob, filename)
+    toast.add({ title: '下载完成', color: 'success', icon: 'i-lucide-check' })
+  } catch (e) {
+    console.error(e)
+    const msg = e instanceof TypeError ? '无法下载（可能被浏览器跨域策略拦截）' : '下载失败，请稍后重试'
+    toast.add({ title: msg, color: 'error', icon: 'i-lucide-circle-x' })
+  } finally {
+    downloadState.value = null
   }
-  pauseMusic = () => {}
-  downloadMusic = (_music: MusicItem) => {}
 }
 
-const playController = new MusicPlayController()
+const pannelOpen = ref(true)
 </script>
 
 <template>
@@ -189,43 +161,17 @@ const playController = new MusicPlayController()
         </UButton>
       </div>
 
-      <UModal
-        v-model:open="quotaModalOpen"
-        title="试听额度"
-        :dismissible="true"
-        class="sm:max-w-md">
-        <template #body>
-          <p class="text-muted text-sm leading-relaxed">
-            {{ quotaModalMessage }}
-          </p>
-        </template>
-        <template #footer>
-          <div class="flex w-full justify-end gap-2">
-            <UButton
-              color="neutral"
-              variant="outline"
-              @click="quotaModalOpen = false">
-              取消
-            </UButton>
-            <UButton
-              color="primary"
-              @click="onQuotaConfirm">
-              了解会员
-            </UButton>
-          </div>
-        </template>
-      </UModal>
-
       <template v-if="searchState.searchResults.length > 0">
         <div class="w-full space-y-6">
           <JKMusicTable
             :lists="searchState.searchResults"
             :loading="searchState.isSearching"
-            :current-music="playController.currentMusic"
-            :is-playing="playController.isPlaying"
-            @play="playController.playMusic"
-            @pause="playController.pauseMusic"
-            @download="playController.downloadMusic" />
+            :current-music="tableCurrentMusic"
+            :is-playing="tableIsPlaying"
+            :downloading-id="downloadState?.id ?? null"
+            @play="music.playMusic"
+            @pause="music.pauseMusic"
+            @download="downloadMusic" />
 
           <div class="flex flex-wrap items-center justify-end gap-3">
             <USelect
@@ -329,5 +275,12 @@ const playController = new MusicPlayController()
         </div>
       </UCard>
     </div>
+
+    <Teleport to="body">
+      <JKMusicDownloadOverlay
+        v-if="downloadState"
+        :progress="downloadState.progress"
+        :title="downloadState.label" />
+    </Teleport>
   </div>
 </template>

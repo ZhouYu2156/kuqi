@@ -2,20 +2,34 @@
 @import '@nuxt/ui';
 
 @font-face {
+  font-style: normal;
   font-family: 'FZHanZhenGuangBiao';
+  font-weight: 400;
   src: url('../fonts/FZHanZhenGuangBiao.woff2') format('woff2');
+  font-display: swap;
 }
+
 @font-face {
-  font-family: 'PingFangSC';
-  src: url('../fonts/PingFangSC.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Quicksand-Bold';
-  src: url('../fonts/Quicksand-Bold.woff2') format('woff2');
-}
-@font-face {
+  font-style: normal;
+  font-weight: 400;
   font-family: 'ZKKuaiLeTi';
   src: url('../fonts/ZKKuaiLeTi.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-style: normal;
+  font-family: 'PingFangSC';
+  font-weight: 400;
+  src: url('../fonts/PingFangSC.woff2') format('woff2');
+  font-display: swap;
+}
+
+@font-face {
+  font-style: normal;
+  font-family: 'Quicksand-Bold';
+  font-weight: 700;
+  src: url('../fonts/Quicksand-Bold.woff2') format('woff2');
+  font-display: swap;
 }
 
 @theme {
@@ -37,4 +51,13 @@
   ::view-transition-new(root) {
     animation-duration: 0.01ms;
   }
+}
+
+/* 所有滚动条样式 */
+*::-webkit-scrollbar {
+  width: 3px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #234567;
+  border-radius: 3px;
 }

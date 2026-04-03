@@ -19,6 +19,8 @@ export enum UserStatus {
 export interface User extends CommonFields {
   username: string
   email: string
+  /** 0 未知 1 男 2 女 */
+  sex: number
   phone?: string
   avatar?: string
   role: UserRole

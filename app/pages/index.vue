@@ -76,8 +76,6 @@ const sectionUi: PageSectionProps['ui'] = {
     <template #default>
       <img
         :src="heroImage"
-        width="960"
-        height="720"
         alt=""
         class="mx-auto w-full max-w-lg rounded-2xl border border-neutral-200/80 shadow-xl ring-1 ring-black/5 lg:mx-0 lg:ml-auto dark:border-white/10 dark:ring-white/10"
         loading="eager"
@@ -87,17 +85,19 @@ const sectionUi: PageSectionProps['ui'] = {
 
   <UPageSection
     title="技术栈"
-    description="当前项目采用的是最新的主流框架和技术栈开发。"
+    description="当前项目采用最新的主流框架和技术栈开发。"
     orientation="vertical"
     class="border-t border-neutral-200 bg-neutral-50/50 dark:border-white/10 dark:bg-neutral-900/30"
     :ui="sectionUi">
     <template #body>
       <UPageGrid class="gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <UCard
+        <UPageCard
           v-for="item in stack"
           :key="item.name"
           variant="outline"
-          class="h-full">
+          class="h-full"
+          spotlight
+          spotlight-color="primary">
           <div class="flex gap-3">
             <UIcon
               :name="item.icon"
@@ -111,7 +111,7 @@ const sectionUi: PageSectionProps['ui'] = {
               </p>
             </div>
           </div>
-        </UCard>
+        </UPageCard>
       </UPageGrid>
     </template>
   </UPageSection>

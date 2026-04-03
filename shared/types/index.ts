@@ -1,4 +1,5 @@
 export * from './api/common'
+export * from './api/auth'
 export * from './api/music'
 export * from './api/order'
 

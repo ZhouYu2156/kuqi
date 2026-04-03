@@ -7,6 +7,7 @@
     "dev": "node --max-old-space-size=8192 ./node_modules/nuxt/bin/nuxt.mjs dev",
     "generate": "node --max-old-space-size=8192 ./node_modules/nuxt/bin/nuxt.mjs generate",
     "preview": "node --max-old-space-size=8192 ./node_modules/nuxt/bin/nuxt.mjs preview",
+    "start": "node company/server/index.mjs",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
@@ -15,9 +16,11 @@
     "@tailwindcss/vite": "^4.2.2",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.8.0",
+    "canvas-confetti": "^1.9.4",
     "dotenv": "^17.3.1",
     "jose": "^6.2.2",
     "mysql2": "^3.20.0",
+    "nodemailer": "^8.0.4",
     "nuxt": "^4.4.2",
     "qrcode": "^1.5.4",
     "tailwindcss": "^4.2.2",
@@ -42,7 +45,9 @@
     "@iconify-json/simple-icons": "^1.2.75",
     "@iconify-json/vscode-icons": "^1.2.45",
     "@types/bcryptjs": "^3.0.0",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^25.5.0",
+    "@types/nodemailer": "^7.0.11",
     "@types/qrcode": "^1.5.6",
     "sass": "^1.98.0"
   }

@@ -1,5 +1,13 @@
 import type { CommonFields } from '~~/shared/types'
 
+/** 会员订单套餐类型（与 member_orders.vip_type 一致） */
+export type MemberVipType = 'monthly' | 'yearly'
+
+export const MemberVipType = {
+  Monthly: 'monthly',
+  Yearly: 'yearly',
+} as const satisfies Record<string, MemberVipType>
+
 export enum OrderStatus {
   SUCCESS = 1, // 支付成功
   REFUND = 2, // 转入退款
@@ -15,6 +23,8 @@ export interface MemberOrder extends CommonFields {
   out_trade_no: string // 商户系统内部订单号
   amount: number // 订单金额
   description: string // 订单描述
+  /** 会员套餐类型（member_orders.vip_type） */
+  vip_type: MemberVipType
   trade_state: OrderStatus // 订单状态
   transaction_id?: string // 微信支付订单号
 }

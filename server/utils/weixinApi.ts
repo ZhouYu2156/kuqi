@@ -1,7 +1,9 @@
 import { config } from 'dotenv'
 import crypto from 'node:crypto'
-import type { CreateWxOrderParams } from '~~/server/types'
 import { loadPrivateKey } from '~~/server/utils/common'
+import type { CreateWxOrderParams } from '~~/shared/types'
+import { queryWxOrderStatusResponse } from '~~/shared/types'
+import { generateTradeNo } from '~~/shared/utils'
 
 config()
 
@@ -32,12 +34,12 @@ function constructAuthorization({
   // 微信支付要求每个字段后面都有 \n
   // HTTP请求方法\n
   // URL\n
-  // 请求时间戳\n
+  // 请求时间戳（秒级 Unix 时间戳，与 Authorization 中 timestamp 一致）\n
   // 请求随机串\n
   // 请求报文主体\n
-  const timestamp = Date.now()
+  const timestamp = Math.floor(Date.now() / 1000)
   const nonceStr = crypto.randomBytes(16).toString('hex')
-  const bodyStr = body && typeof body === 'object' ? JSON.stringify(body) : body
+  const bodyStr = typeof body === 'object' && body !== null ? JSON.stringify(body) : String(body ?? '')
   const message = `${method}\n${url}\n${timestamp}\n${nonceStr}\n${bodyStr}\n`
 
   // 步骤 5：计算签名值
@@ -57,43 +59,42 @@ function constructAuthorization({
  * 创建微信订单, 生成支付链接, 前端需要自行将支付链接转换为二维码供别人微信扫码支付
  * @returns
  */
-export async function createWxOrder(options: CreateWxOrderParams) {
-  // 1. 创建微信支付订单
+export async function createWxOrder(options: CreateWxOrderParams): Promise<{ code_url: string; out_trade_no: string }> {
   const createWxOrderApi = 'https://api.mch.weixin.qq.com/v3/pay/transactions/native'
 
-  // 内部自动生成商户订单号, 无需传入
   const outTradeNo = generateTradeNo()
 
-  // 必传参数
   const body: CreateWxOrderParams = {
-    appid: process.env.WX_APPID as string, // 小程序APPID
-    mchid: process.env.WX_MCHID as string, // 商户号
-    description: options.description, // 商品描述
-    out_trade_no: outTradeNo, // 商户订单号: 订单唯一标识
-    notify_url: options.notify_url, // 通知前端回调地址
+    appid: process.env.WX_APPID as string,
+    mchid: process.env.WX_MCHID as string,
+    description: options.description,
+    out_trade_no: outTradeNo,
+    notify_url: options.notify_url,
     amount: {
-      total: options.amount.total, // 商品金额
+      total: options.amount.total,
     },
   }
 
-  // 创建 Authorization 认证标识
-  const authorization = constructAuthorization({ body: JSON.stringify(body) })
+  // 与签名使用同一份 JSON 字节，避免 ofetch 序列化与 JSON.stringify 不一致导致 401
+  const bodyRaw = JSON.stringify(body)
+  const authorization = constructAuthorization({ body: bodyRaw })
 
-  // 添加到请求头中
   const headers = {
     Authorization: authorization,
     Accept: 'application/json',
     'Content-Type': 'application/json',
   }
 
-  // 请求 微信支付 下单 => 返回支付二维码的链接, 需要自行转换为二维码展示给用户微信扫码
   const response = await $fetch<{ code_url: string }>(createWxOrderApi, {
     method: 'POST',
     headers,
-    body,
+    body: bodyRaw,
   })
 
-  return response
+  return {
+    code_url: response.code_url,
+    out_trade_no: outTradeNo,
+  }
 }
 
 /**
@@ -102,17 +103,13 @@ export async function createWxOrder(options: CreateWxOrderParams) {
  * @returns 订单信息
  */
 export async function queryWxOrderStatus(opts: { out_trade_no: string }) {
-  // 目标地址, 【商户订单号】 商户下单时传入的商户系统内部订单号。
-  const queryWxOrderApi = `/v3/pay/transactions/out-trade-no/${opts.out_trade_no}`
+  // 直连商户必传 query：mchid（见 https://pay.weixin.qq.com/doc/v3/merchant/4012791838 ）
+  // 签名字符串里的 url 须与真实请求 path + query 完全一致（含 ?mchid=）
+  const mchid = process.env.WX_MCHID as string
+  const outNo = encodeURIComponent(opts.out_trade_no)
+  const queryWxOrderApi = `/v3/pay/transactions/out-trade-no/${outNo}?mchid=${encodeURIComponent(mchid)}`
   const targetUrl = `https://api.mch.weixin.qq.com${queryWxOrderApi}`
 
-  /**
-   * 请求方法: GET
-   *
-   * 请求参数
-   *   Authorization: 请求参数里带Path参数（路径参数），如何计算签名: 参考https://pay.weixin.qq.com/doc/v3/merchant/4012365334
-   *   transaction_id: 微信支付订单号
-   */
   const authorization = constructAuthorization({
     url: queryWxOrderApi,
     method: 'GET',
@@ -124,7 +121,7 @@ export async function queryWxOrderStatus(opts: { out_trade_no: string }) {
     Accept: 'application/json',
   }
 
-  const response = await $fetch(targetUrl, {
+  const response = await $fetch<queryWxOrderStatusResponse>(targetUrl, {
     method: 'GET',
     headers,
   })

@@ -6,6 +6,8 @@ defineProps<{
   loading: boolean
   currentMusic: MusicDetailItem | null
   isPlaying: boolean
+  /** 正在下载时非 null，用于禁用下载按钮 */
+  downloadingId: string | null
 }>()
 
 const emit = defineEmits<{
@@ -30,17 +32,15 @@ function isCurrentPlaying(row: MusicItem, current: MusicDetailItem | null, playi
     <div
       v-if="loading"
       class="divide-y divide-default p-4">
-      <USkeleton
-        v-for="n in 8"
-        :key="n"
-        class="h-11 w-full" />
+      <JKMusicListSkeleton />
     </div>
 
     <UTable
       v-else
       :data="lists"
       :columns="[...columns]"
-      class="min-w-full">
+      class="min-w-full"
+    >
       <template #SongName-cell="{ row }">
         <span
           class="block max-w-[min(100%,280px)] truncate font-medium text-highlighted"
@@ -64,16 +64,10 @@ function isCurrentPlaying(row: MusicItem, current: MusicDetailItem | null, playi
             variant="solid"
             size="sm"
             square
-            :icon="
-              isCurrentPlaying(row.original, currentMusic, isPlaying)
-                ? 'i-lucide-pause'
-                : 'i-lucide-play'
-            "
+            :icon="isCurrentPlaying(row.original, currentMusic, isPlaying) ? 'i-lucide-pause' : 'i-lucide-play'"
             :aria-label="isCurrentPlaying(row.original, currentMusic, isPlaying) ? '暂停' : '播放'"
             @click="
-              isCurrentPlaying(row.original, currentMusic, isPlaying)
-                ? emit('pause')
-                : emit('play', row.original)
+              isCurrentPlaying(row.original, currentMusic, isPlaying) ? emit('pause') : emit('play', row.original)
             " />
           <UButton
             color="neutral"
@@ -82,6 +76,7 @@ function isCurrentPlaying(row: MusicItem, current: MusicDetailItem | null, playi
             square
             icon="i-lucide-download"
             aria-label="下载"
+            :disabled="!!downloadingId"
             @click="emit('download', row.original)" />
         </div>
       </template>
