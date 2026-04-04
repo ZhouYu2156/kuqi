@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+
+  "name": "jiketu",
+  "description": "This is a music extension.",
+  "version": "1.0",
+
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "点击弹出"
+  },
+
+  "permissions": ["activeTab", "storage"],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}

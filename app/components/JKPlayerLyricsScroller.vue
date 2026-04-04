@@ -13,7 +13,8 @@ const props = withDefaults(
   { fontClass: 'font-sans' },
 )
 
-const LINE_PX = 48
+/** 与 `.jk-lrc-line` min-height 一致，用于滚动居中计算 */
+const LINE_PX = 52
 
 const lines = computed<LrcLine[]>(() => parseLrc(props.lyricsRaw || ''))
 
@@ -92,13 +93,13 @@ const highlightIndex = computed(() => activeIndex.value)
       <div
         v-for="(line, i) in lines"
         :key="`${line.time}-${i}`"
-        class="jk-lrc-line flex items-center justify-center px-4 text-center text-base leading-snug">
+        class="jk-lrc-line flex items-center justify-center px-4 text-center leading-snug">
         <span
           class="jk-lrc-line__text block max-w-full"
           :class="[
             highlightIndex === i
               ? 'jk-lrc-line__text--active font-semibold text-primary'
-              : 'text-white/45',
+              : 'jk-lrc-line__text--inactive text-white/45',
           ]">
           {{ line.text }}
         </span>
@@ -119,16 +120,28 @@ const highlightIndex = computed(() => activeIndex.value)
 }
 
 .jk-lrc-line {
-  min-height: 48px;
+  min-height: 52px;
 }
 
-/** 光晕只在文字层动画，避免整行 scale/字号变化与 transition-all 触发布局抖动 */
+/**
+ * 当前行字号放大用 transition（不用 transition-all，避免无关属性参与插值导致抖动）
+ */
 .jk-lrc-line__text {
+  font-size: 1rem;
   transform: translateZ(0);
   backface-visibility: hidden;
+  transition:
+    font-size 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.32s ease,
+    font-weight 0.28s ease;
+}
+
+.jk-lrc-line__text--inactive {
+  font-size: 0.9375rem;
 }
 
 .jk-lrc-line__text--active {
+  font-size: 1.125rem;
   animation: jk-lrc-breathe 2.6s ease-in-out infinite;
 }
 
@@ -149,8 +162,17 @@ const highlightIndex = computed(() => activeIndex.value)
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .jk-lrc-line__text {
+    transition: color 0.2s ease, font-weight 0.2s ease;
+  }
+
+  .jk-lrc-line__text--inactive {
+    font-size: 1rem;
+  }
+
   .jk-lrc-line__text--active {
     animation: none;
+    font-size: 1.125rem;
     text-shadow:
       0 0 8px color-mix(in oklab, var(--ui-primary) 40%, transparent),
       0 0 16px color-mix(in oklab, var(--ui-primary) 20%, transparent);

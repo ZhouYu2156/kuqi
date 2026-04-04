@@ -274,6 +274,8 @@ const pannelOpen = ref(true)
           </div>
         </div>
       </UCard>
+
+      <JKTreasuredMusic />
     </div>
 
     <Teleport to="body">

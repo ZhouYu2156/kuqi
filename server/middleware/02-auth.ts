@@ -5,9 +5,18 @@ import { verifyAccessToken } from '~~/server/utils/jwt'
 /** 完全匹配：无需登录的接口（如注册、登录） */
 const PUBLIC_API_PATHS = new Set(['/api/auth/register', '/api/auth/login', '/api/auth/send-email-code'])
 
+/** 酷狗搜索与详情为公开；珍藏音乐列表公开，单首播放需登录+会员（见 treasured/[id] 内校验） */
+function isPublicMusicPath(pathname: string): boolean {
+  const p = pathname.replace(/\/+$/, '') || '/'
+  if (p === '/api/music') return true
+  if (p === '/api/music/detail') return true
+  if (p === '/api/music/treasured') return true
+  return false
+}
+
 function isPublicApiPath(pathname: string): boolean {
   if (PUBLIC_API_PATHS.has(pathname)) return true
-  if (pathname === '/api/music' || pathname.startsWith('/api/music/')) return true
+  if (isPublicMusicPath(pathname)) return true
   if (pathname.startsWith('/api/_nuxt_icon')) return true
   /** 微信支付异步通知（无用户 Cookie，由微信服务器 POST） */
   if (pathname === '/api/order/wx-notify') return true

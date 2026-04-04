@@ -122,6 +122,36 @@ export function useMusicPlayback() {
     }
   }
 
+  /** 珍藏音乐（public/musics 清单）：先 ensurePlayEligibility，再请求后端返回歌词与播放地址 */
+  async function playTreasured(id: string, opts?: { silent?: boolean }) {
+    if (!ensurePlayEligibility()) return
+    initPlaylistFromStorage()
+    const token = auth.value?.token
+    if (!token) return
+    try {
+      const res = await $fetch<UnionResponse<MusicDetailItem>>(`/api/music/treasured/${encodeURIComponent(id)}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (res.code === ResponseCode.Success) {
+        currentMusic.value = res.data
+        isPlaying.value = true
+        upsertPlaylist(res.data)
+        if (!opts?.silent) {
+          toast.add({ title: res.message || '即将播放', color: 'success', icon: 'i-lucide-music' })
+        }
+      } else {
+        toast.add({
+          title: res.message,
+          color: res.code === ResponseCode.Forbidden ? 'warning' : 'error',
+          icon: 'i-lucide-circle-alert',
+        })
+      }
+    } catch {
+      toast.add({ title: '请求失败', color: 'error', icon: 'i-lucide-wifi-off' })
+    }
+  }
+
   async function playMusic(music: MusicItem, opts?: { silent?: boolean }) {
     if (!ensurePlayEligibility()) return
     const response = await $fetch<UnionResponse<MusicDetailItem>>('/api/music/detail', {
@@ -255,6 +285,7 @@ export function useMusicPlayback() {
     initPlaylistFromStorage,
     setPlayMode,
     playMusic,
+    playTreasured,
     playFromDetail,
     pauseMusic,
     resumeMusic,

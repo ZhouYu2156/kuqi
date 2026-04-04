@@ -37,3 +37,21 @@ export type SearchMusicList = {
   page: number
   pagesize: number
 }
+
+/** 清单条目（与 shared/data/treasured-musics.json 一致） */
+export type TreasuredManifestItem = {
+  id: string
+  song_name: string
+  author_name: string
+  audio: string
+  cover: string
+  lrc: string
+}
+
+/** GET /api/music/treasured 列表项（不含播放地址与歌词正文） */
+export type TreasuredListItem = {
+  id: string
+  song_name: string
+  author_name: string
+  cover: string
+}
